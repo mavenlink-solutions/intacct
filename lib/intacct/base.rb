@@ -1,17 +1,25 @@
 module Intacct
-  class Base < Struct.new(:client, :attributes)
-    include Intacct::Actions
+  class Base
+    include Intacct::Support::Actions
+    include Intacct::Support::DSL
+    include Intacct::Support::Fields
+    include Intacct::Support::XML
 
-    attr_accessor  :client, :sent_xml, :intacct_action, :api_name, :errors
+    attr_accessor  :client, :attributes
+    attr_reader :recordno
 
-    def self.build(client, options = {})
-      self.new(client, options)
+    def self.build(client, attributes = {})
+      self.new(client, attributes)
     end
 
-    def initialize(client, *args)
-      @client = client
-      args[0] = OpenStruct.new(args[0]) if args[0].is_a? Hash
-      super(client, *args)
+    def initialize(client, attributes = {})
+      @client     = client
+      @attributes = HashWithIndifferentAccess.new(attributes)
+
+      attributes.symbolize_keys.select { |k,v| self.class.fields.keys.include?(k) }.each do |k,v|
+        send("#{k}=", v)
+      end
+      @recordno = attributes['recordno']
     end
 
     def create_xml(xml)
@@ -22,15 +30,11 @@ module Intacct
       raise NotImplementedError, 'This model does not support update.'
     end
 
-    def id_attribute
-      self.class.id_attribute
-    end
-
-    def method_missing(method_name, *args, &block)
+    def method_missing(method_name, *args)
       stripped_method_name = method_name.to_s.gsub(/=$/, '')
 
-      if stripped_method_name.to_sym.in? self.attributes.to_h.keys
-        self.attributes.send(method_name, *args)
+      if stripped_method_name.in? self.attributes.keys
+        self.attributes[method_name]
       else
         super method_name, *args
       end
@@ -44,53 +48,15 @@ module Intacct
       end
     end
 
-    def api_name
-      self.class.api_name
-    end
-
     def persisted?
       !!recordno
     end
 
     private
 
-    def read_only_fields
-      self.class.read_only_fields
-    end
-
-    def attributes_to_xml(xml, key, value)
-      if value.is_a?(Hash)
-        xml.send(key) {
-          value.each do |k,v|
-            attributes_to_xml(xml, k, v)
-          end
-        }
-      elsif value.is_a?(Array)
-        value.each do |val|
-          val.each do |k,v|
-            attributes_to_xml(xml, k, v)
-          end
-        end
-      else
-        xml.send(key, value)
-      end
-    end
-
-    def sliced_attributes
-      attributes.to_h.except(*read_only_fields, :whenmodified)
-    end
-
     %w(invoice bill vendor customer project).each do |type|
       define_method "intacct_#{type}_prefix" do
         Intacct.send("#{type}_prefix")
-      end
-    end
-
-    def successful?
-      if status = response.at('//result//status') and status.content == "success"
-        true
-      else
-        false
       end
     end
 
@@ -106,33 +72,5 @@ module Intacct
       SecureRandom.random_number.to_s
     end
 
-
-    #
-    # Class Methods
-    #
-
-    def self.api_name(name = nil)
-      @api_name ||= (name || self.name.to_s.demodulize.downcase)
-    end
-
-    def self.id_attribute(attr = nil)
-      @id_attribute = (attr || "#{self.name.to_s_demodulize.downcase}id") if attr
-      @id_attribute
-    end
-
-    def self.read_only_fields(*args)
-      if args.empty?
-        @read_only_fields ||= Set.new
-      else
-        args.each do |arg|
-          read_only_field arg
-        end
-      end
-    end
-
-    def self.read_only_field(name)
-      name_sym = name.to_sym
-      read_only_fields << name_sym
-    end
   end
 end

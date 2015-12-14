@@ -33,7 +33,7 @@ module Intacct
           success = self.class.delete(client, options)
 
           if success
-            self.attributes.recordno = nil
+            self.recordno = nil
             true
           else
             false

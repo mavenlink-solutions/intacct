@@ -7,7 +7,8 @@ module Intacct
           xml.function(controlid: "1") {
             xml.update {
               xml.send(klass.api_name) {
-                klass.update_xml(xml)
+                xml.recordno klass.recordno
+                klass.to_xml(xml, :update)
               }
             }
           }

@@ -2,7 +2,7 @@ module Intacct
   class XmlRequest
     include Intacct::Callbacks
 
-    attr_accessor :client, :attributes, :action, :intacct_action, :model_class, :model
+    attr_accessor :client, :attributes, :action, :model_class, :model
 
     URL = "https://www.intacct.com/ia/xml/xmlgw.phtml".freeze
 
@@ -24,8 +24,6 @@ module Intacct
     private
 
     def send_xml(action = nil)
-      @intacct_action = action.to_s
-
       run_hook :"before_#{action}" if action.in? CALLBACK_ACTIONS
 
       builder = Nokogiri::XML::Builder.new do |xml|
@@ -53,9 +51,7 @@ module Intacct
       end
 
       xml = builder.doc.root.to_xml
-
       uri = URI(URL)
-
       res = Net::HTTP.post_form(uri, 'xmlrequest' => xml)
       Nokogiri::XML(res.body)
     end

@@ -7,7 +7,7 @@ module Intacct
           xml.function(controlid: "1") {
             xml.create {
               xml.send(klass.api_name) {
-                klass.create_xml(xml)
+                klass.to_xml(xml, :create)
               }
             }
           }
@@ -32,7 +32,7 @@ module Intacct
           @errors = response.errors
 
           if response.success?
-            self.attributes.recordno  = response.body['recordno']
+            self.recordno  = response.body['recordno']
             true
           else
             false
