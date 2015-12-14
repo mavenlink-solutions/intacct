@@ -3,9 +3,7 @@ module Intacct
     module Fields
       extend ActiveSupport::Concern
 
-      def read_only_fields
-        self.class.read_only_fields
-      end
+      delegate :read_only_fields, to: :class
 
       module ClassMethods
 
@@ -38,19 +36,19 @@ module Intacct
 
         def field(name, options = {})
           name_sym = name.to_sym
-          klass    = options.delete(:class)
+          klass    = options[:class]
 
           fields[name_sym] = options
           if klass
             define_method(name_sym) do
-              attributes[name_sym] ||= klass.new
+              attributes[name_sym] ||= klass.new(client)
             end
 
             define_method("#{name_sym}=") do |value|
               if value.nil?
                 attributes.delete(name_sym)
               else
-                attributes[name_sym] = value.kind_of?(klass) ? value : klass.new(value)
+                attributes[name_sym] = value.kind_of?(klass) ? value : klass.new(client, value)
               end
             end
           else

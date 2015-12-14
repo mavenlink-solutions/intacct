@@ -22,14 +22,6 @@ module Intacct
       @recordno = attributes['recordno']
     end
 
-    def create_xml(xml)
-      raise NotImplementedError, 'This model does not support create.'
-    end
-
-    def update_xml(xml)
-      raise NotImplementedError, 'This model does not support update.'
-    end
-
     def method_missing(method_name, *args)
       stripped_method_name = method_name.to_s.gsub(/=$/, '')
 

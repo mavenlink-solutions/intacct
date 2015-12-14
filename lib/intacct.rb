@@ -59,6 +59,7 @@ module Intacct
     autoload :XML,     'intacct/support/xml'
     autoload :DSL,     'intacct/support/dsl'
     autoload :Actions, 'intacct/support/actions'
+    autoload :Sublist, 'intacct/support/sublist'
   end
 
   module Actions
