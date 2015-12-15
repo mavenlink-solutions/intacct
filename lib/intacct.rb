@@ -40,6 +40,7 @@ module Intacct
     autoload :Customer,         'intacct/models/customer'
     autoload :Department,       'intacct/models/department'
     autoload :Employee,         'intacct/models/employee'
+    autoload :ExpenseReport,    'intacct/models/expense_report'
     autoload :Expense,          'intacct/models/expense'
     autoload :Invoice,          'intacct/models/invoice'
     autoload :Location,         'intacct/models/location'
