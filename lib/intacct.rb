@@ -48,6 +48,7 @@ module Intacct
     autoload :ProjectResource,  'intacct/models/project_resource'
     autoload :ProjectStatus,    'intacct/models/project_status'
     autoload :ProjectType,      'intacct/models/project_type'
+    autoload :SalesDocument,    'intacct/models/sales_document'
     autoload :Task,             'intacct/models/task'
     autoload :Task_resource,    'intacct/models/task_resource'
     autoload :Timesheet,        'intacct/models/timesheet'
