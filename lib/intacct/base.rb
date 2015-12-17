@@ -44,25 +44,5 @@ module Intacct
       !!recordno
     end
 
-    private
-
-    %w(invoice bill vendor customer project).each do |type|
-      define_method "intacct_#{type}_prefix" do
-        Intacct.send("#{type}_prefix")
-      end
-    end
-
-    def intacct_system_id
-      intacct_attributes_id
-    end
-
-    def intacct_attributes_id
-      attributes.id ? "#{intacct_customer_prefix}#{attributes.id}" : random_attributes_id
-    end
-
-    def random_attributes_id
-      SecureRandom.random_number.to_s
-    end
-
   end
 end

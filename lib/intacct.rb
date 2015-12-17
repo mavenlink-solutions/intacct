@@ -10,11 +10,7 @@ require 'intacct/version'
 module Intacct
   extend self
 
-  attr_accessor :xml_sender_id  , :xml_password    ,
-                 :user_id        , :company_id      , :password ,
-                 :invoice_prefix , :bill_prefix     ,
-                 :vendor_prefix  , :customer_prefix ,
-                 :project_prefix , :task_prefix
+  attr_accessor :xml_sender_id, :xml_password, :user_id, :company_id, :password
 
   def configure
     yield self
