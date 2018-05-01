@@ -52,6 +52,10 @@ module Intacct
         }
       end
 
+      builder.doc.root.children.last.children.last.child.child.child.traverse do |node|
+        node.name = node.name.upcase if node.kind_of?(Nokogiri::XML::Element)
+      end
+
       xml = builder.doc.root.to_xml
 
       uri = URI(URL)
@@ -59,6 +63,5 @@ module Intacct
       res = Net::HTTP.post_form(uri, 'xmlrequest' => xml)
       Nokogiri::XML(res.body)
     end
-
   end
 end
