@@ -13,9 +13,11 @@ module Intacct
       end
 
       def update_xml(xml)
-        create_xml(xml)
+        xml.ASOFDATE  attributes.asofdate
+        xml.percent   attributes.percent
+        xml.note      attributes.note
+        xml.recordno  attributes.recordno
       end
-
     end
   end
 end
