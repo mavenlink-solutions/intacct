@@ -5,11 +5,17 @@ module Intacct
       def request(options)
         Intacct::XmlRequest.build_xml(client, action) do |xml|
           xml.function(controlid: "1") {
-            xml.update {
-              xml.send(klass.api_name) {
+            if klass.api_name == "EEXPENSES"
+              xml.update_expensereport(key: klass.record) {
                 klass.update_xml(xml)
               }
-            }
+            else
+              xml.update {
+                xml.send(klass.api_name) {
+                  klass.update_xml(xml)
+                }
+              }
+            end
           }
         end
       end
