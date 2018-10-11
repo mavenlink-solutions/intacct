@@ -22,7 +22,6 @@ module Intacct
         xml.parenttaskname     attributes.parenttaskname
         xml.budgetqty          attributes.budgetqty
         xml.estqty             attributes.estqty
-        xml.obspercentcomplete attributes.obspercentcomplete if attributes.obspercentcomplete
 
         # Custom field for Mavenlink
         # TODO(AB): Remove this later
