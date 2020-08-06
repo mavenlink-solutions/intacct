@@ -1,8 +1,8 @@
 module Intacct
   module Models
     class Project < Intacct::Base
-      CREATE_NAMES = [:projectid, :name, :description, :parentid, :invoicewithparent, :projectcategory, :projecttype, :projectstatus, :customerid, :managerid, :custuserid, :salescontactid, :begindate, :enddate, :departmentid, :locationid, :classid, :currency, :billingtype, :termname, :docnumber, :billto, :shipto, :contactinfo, :sonumber, :ponumber, :poamount, :pqnumber, :budgetamount, :budgetedcost, :budgetqty, :userrestrictions, :obspercentcomplete, :budgetid, :billingrate, :billingpricing, :expenserate, :expensepricing, :poaprate, :poappricing, :status, :supdocid, :invoicemessage, :invoicecurrency, :projectresources, :billingovermax, :excludeexpenses, :customfields].freeze
-      UPDATE_NAMES = CREATE_NAMES
+      CREATE_KEYS = [:projectid, :name, :description, :parentid, :invoicewithparent, :projectcategory, :projecttype, :projectstatus, :customerid, :managerid, :custuserid, :salescontactid, :begindate, :enddate, :departmentid, :locationid, :classid, :currency, :billingtype, :termname, :docnumber, :billto, :shipto, :contactinfo, :sonumber, :ponumber, :poamount, :pqnumber, :budgetamount, :budgetedcost, :budgetqty, :userrestrictions, :obspercentcomplete, :budgetid, :billingrate, :billingpricing, :expenserate, :expensepricing, :poaprate, :poappricing, :status, :supdocid, :invoicemessage, :invoicecurrency, :projectresources, :billingovermax, :excludeexpenses, :customfields].freeze
+      UPDATE_KEYS = CREATE_KEYS
 
       def create_xml(xml)
         xml.PROJECTID attributes.projectid
@@ -52,7 +52,7 @@ module Intacct
         xml.PROJECTRESOURCES attributes.projectresources if attributes.projectresources.present?
         xml.BILLINGOVERMAX attributes.billingovermax if attributes.billingovermax.present?
         xml.EXCLUDEEXPENSES attributes.excludeexpenses if attributes.excludeexpenses.present?
-              if attributes.customfields.present? || attributes.to_h.except(*CREATE_NAMES).present?
+              if attributes.customfields.present? || attributes.to_h.except(*CREATE_KEYS).present?
         xml.customfields do
           if attributes.customfields.present?
             attributes.customfields.presence&.each do |custom_field|
@@ -63,8 +63,8 @@ module Intacct
             end
           end
 
-          if attributes.to_h.except(*CREATE_NAMES).present?
-            attributes.to_h.except(*CREATE_NAMES).each do |name, value|
+          if attributes.to_h.except(*CREATE_KEYS).present?
+            attributes.to_h.except(*CREATE_KEYS).each do |name, value|
               xml.customfield do
                 xml.customfieldname name
                 xml.customfieldvalue value

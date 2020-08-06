@@ -121,7 +121,7 @@ class XmlType
 
   def custom_field_ruby(action)
     <<-RUBY
-      if attributes.customfields.present? || attributes.to_h.except(*#{action.upcase}_NAMES).present?
+      if attributes.customfields.present? || attributes.to_h.except(*#{action.upcase}_KEYS).present?
         xml.customfields do
           if attributes.customfields.present?
             attributes.customfields.presence&.each do |custom_field|
@@ -132,8 +132,8 @@ class XmlType
             end
           end
 
-          if attributes.to_h.except(*#{action.upcase}_NAMES).present?
-            attributes.to_h.except(*#{action.upcase}_NAMES).each do |name, value|
+          if attributes.to_h.except(*#{action.upcase}_KEYS).present?
+            attributes.to_h.except(*#{action.upcase}_KEYS).each do |name, value|
               xml.customfield do
                 xml.customfieldname name
                 xml.customfieldvalue value
@@ -202,7 +202,7 @@ def process_template(object)
   @update_names = @update_attributes.map { |attr| attr.name.to_sym }
 
   if @identical = @create_names == @update_names
-    @update_names = "CREATE_NAMES"
+    @update_names = "CREATE_KEYS"
   end
 
   File.write(File.expand_path("../lib/intacct/models/#{object}.rb", __dir__), ERB.new(@template, trim_mode: "-").result)

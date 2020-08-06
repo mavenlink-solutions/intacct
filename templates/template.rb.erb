@@ -1,8 +1,8 @@
 module Intacct
   module Models
     class <%= @class_name %> < Intacct::Base
-      CREATE_NAMES = <%= @create_names %>.freeze
-      UPDATE_NAMES = <%= @update_names %><% unless @identical %>.freeze<% end %>
+      CREATE_KEYS = <%= @create_names %>.freeze
+      UPDATE_KEYS = <%= @update_names %><% unless @identical %>.freeze<% end %>
 
       <%- if @create_attributes.present? -%>
       def create_xml(xml)
