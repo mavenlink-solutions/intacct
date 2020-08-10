@@ -208,4 +208,4 @@ def process_template(object)
   File.write(File.expand_path("../lib/intacct/models/#{object}.rb", __dir__), ERB.new(@template, trim_mode: "-").result)
 end
 
-%w[project].each { |object| process_template(object) }
+%w[project task].each { |object| process_template(object) }
