@@ -24,7 +24,13 @@ module Intacct
         xml.ESTQTY attributes.estqty if attributes.estqty.present?
         xml.TIMETYPE attributes.timetype if attributes.timetype.present?
         xml.OBSPERCENTCOMPLETE attributes.obspercentcomplete if attributes.obspercentcomplete.present?
-        xml.TASKRESOURCES attributes.taskresources if attributes.taskresources.present?
+                xml.TASKRESOURCES do
+                  Array.wrap(attributes.employeeid).each do |attributes|
+          xml.EMPLOYEEID attributes.employeeid
+        end
+
+        end
+
               if attributes.customfields.present? || attributes.to_h.except(*CREATE_KEYS).present?
         xml.customfields do
           if attributes.customfields.present?
@@ -72,7 +78,13 @@ module Intacct
         xml.ESTQTY attributes.estqty if attributes.estqty.present?
         xml.TIMETYPE attributes.timetype if attributes.timetype.present?
         xml.OBSPERCENTCOMPLETE attributes.obspercentcomplete if attributes.obspercentcomplete.present?
-        xml.TASKRESOURCES attributes.taskresources if attributes.taskresources.present?
+                xml.TASKRESOURCES do
+                  Array.wrap(attributes.employeeid).each do |attributes|
+          xml.EMPLOYEEID attributes.employeeid
+        end
+
+        end
+
               if attributes.customfields.present? || attributes.to_h.except(*UPDATE_KEYS).present?
         xml.customfields do
           if attributes.customfields.present?

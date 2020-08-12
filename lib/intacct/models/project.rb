@@ -49,7 +49,31 @@ module Intacct
         xml.SUPDOCID attributes.supdocid if attributes.supdocid.present?
         xml.INVOICEMESSAGE attributes.invoicemessage if attributes.invoicemessage.present?
         xml.INVOICECURRENCY attributes.invoicecurrency if attributes.invoicecurrency.present?
-        xml.PROJECTRESOURCES attributes.projectresources if attributes.projectresources.present?
+              if attributes.projectresources.present?
+                Array.wrap(attributes.projectresources).each do |attributes|
+                  xml.PROJECTRESOURCES do
+                if attributes.projectresource.present?
+                Array.wrap(attributes.projectresource).each do |attributes|
+                  xml.PROJECTRESOURCE do
+          xml.EMPLOYEEID attributes.employeeid
+xml.ITEMID attributes.itemid if attributes.itemid.present?
+xml.RESOURCEDESCRIPTION attributes.resourcedescription if attributes.resourcedescription.present?
+xml.STARTDATE attributes.startdate.strftime("%m/%d/%Y") if attributes.startdate.present?
+xml.BILLINGRATE attributes.billingrate if attributes.billingrate.present?
+xml.EXPENSERATE attributes.expenserate if attributes.expenserate.present?
+xml.POAPRATE attributes.poaprate if attributes.poaprate.present?
+        end
+
+        end
+
+      end
+
+        end
+
+        end
+
+      end
+
         xml.BILLINGOVERMAX attributes.billingovermax if attributes.billingovermax.present?
         xml.EXCLUDEEXPENSES attributes.excludeexpenses if attributes.excludeexpenses.present?
               if attributes.customfields.present? || attributes.to_h.except(*CREATE_KEYS).present?

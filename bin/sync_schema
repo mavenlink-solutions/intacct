@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+MODELS_TO_GENERATE = %w[project task].freeze
+
 ENV["BUNDLER_VERSION"] ||= "1.17.3"
 ENV["BUNDLE_GEMFILE"] ||= File.expand_path("../Gemfile", __dir__)
 
@@ -61,10 +63,16 @@ class XmlType
     element.attributes.values.detect { |attr| attr.name == "ref" }&.value
   end
 
+  def self.array?(element)
+    val = element.attributes.values.detect { |attr| attr.name == "maxOccurs" }&.value
+    val == "unbounded" || val.to_i > 1
+  end
+
   def initialize(element)
     @type_name = self.class.type_name(element)
     @ref_name = self.class.ref(element)
     @required = element_required?(element)
+    @array = self.class.array?(element)
     build_sequence(element)
   end
 
@@ -84,13 +92,19 @@ class XmlType
     RegisteredTypes.xml_types[ref_name]
   end
 
+  def array?
+    @array
+  end
+
   def ref?
     ref_name.present?
   end
 
   def data_type
-    if ref?
-      ref.data_type
+    if array?
+      :array
+    elsif ref?
+      :ref
     elsif custom_fields?
       :custom_fields
     elsif date?
@@ -102,20 +116,36 @@ class XmlType
     end
   end
 
-  def to_ruby(action = "create")
+  def to_ruby(action = "create", required: required?)
     case data_type
     when :custom_fields
       custom_field_ruby(action)
     when :date
-      append_presence_check("xml.#{xml_name} attributes.#{name}.strftime(\"%m/%d/%Y\")")
-    # when :struct
-      # binding.pry
+      append_presence_check("xml.#{xml_name} attributes.#{name}.strftime(\"%m/%d/%Y\")", required)
+    when :ref
+      ref.to_ruby(action, required: required)
+    when :array
+      wrap_presence_check(<<-RUBY, required)
+        Array.wrap(attributes.#{name}).each do |attributes|
+          #{ref.to_ruby(action)}
+        end
+      RUBY
+    when :struct
+      wrap_presence_check(<<-RUBY)
+        xml.#{xml_name} do
+          #{format_sequence(action)}
+        end
+      RUBY
     else
-      append_presence_check("xml.#{xml_name} attributes.#{name}")
+      append_presence_check("xml.#{xml_name} attributes.#{name}", required)
     end
   end
 
   private
+
+  def format_sequence(action)
+    sequence.map { |s| s.to_ruby(action) }.join("\n")
+  end
 
   attr_reader :ref_name, :required
 
@@ -149,15 +179,17 @@ class XmlType
     name == "customfields"
   end
 
-  def append_presence_check(line)
-    if required?
+  def append_presence_check(line, required = required?)
+    if required
       line
     else
       "#{line} if attributes.#{name}.present?"
     end
   end
 
-  def wrap_presence_check(multiline)
+  def wrap_presence_check(multiline, required = required?)
+    return multiline if required
+
     <<-RUBY
       if attributes.#{name}.present?
         #{multiline}
@@ -208,4 +240,4 @@ def process_template(object)
   File.write(File.expand_path("../lib/intacct/models/#{object}.rb", __dir__), ERB.new(@template, trim_mode: "-").result)
 end
 
-%w[project task].each { |object| process_template(object) }
+MODELS_TO_GENERATE.each { |object| process_template(object) }
