@@ -57,8 +57,8 @@ module Intacct
           if attributes.customfields.present?
             attributes.customfields.presence&.each do |custom_field|
               xml.customfield do
-                xml.customfieldname customfield[:customfieldname]
-                xml.customfieldvalue customfield[:customfieldvalue]
+                xml.customfieldname custom_field[:customfieldname]
+                xml.customfieldvalue custom_field[:customfieldvalue]
               end
             end
           end
