@@ -1,38 +1,38 @@
 module Intacct
   module Models
     class SalesDocument < Base
-      api_name 'sodocument'
+      api_name "sodocument"
 
       def create_name
-        'create_sotransaction'
+        "create_sotransaction"
       end
 
       def create_xml(xml)
         xml.transactiontype attributes.transactiontype
         xml.datecreated do
-          xml.year  attributes.datecreated.try(:strftime, '%Y')
-          xml.month attributes.datecreated.try(:strftime, '%m')
-          xml.day   attributes.datecreated.try(:strftime, '%d')
+          xml.year  attributes.datecreated.try(:strftime, "%Y")
+          xml.month attributes.datecreated.try(:strftime, "%m")
+          xml.day   attributes.datecreated.try(:strftime, "%d")
         end
         xml.dateposted do
-          xml.year  attributes.dateposted.try(:strftime, '%Y')
-          xml.month attributes.dateposted.try(:strftime, '%m')
-          xml.day   attributes.dateposted.try(:strftime, '%d')
+          xml.year  attributes.dateposted.try(:strftime, "%Y")
+          xml.month attributes.dateposted.try(:strftime, "%m")
+          xml.day   attributes.dateposted.try(:strftime, "%d")
         end
         xml.createdfrom attributes.createdfrom
         xml.customerid  attributes.customerid
         xml.documentno  attributes.documentno
         xml.origdocdate do
-          xml.year  attributes.origdocdate.try(:strftime, '%Y')
-          xml.month attributes.origdocdate.try(:strftime, '%m')
-          xml.day   attributes.origdocdate.try(:strftime, '%d')
+          xml.year  attributes.origdocdate.try(:strftime, "%Y")
+          xml.month attributes.origdocdate.try(:strftime, "%m")
+          xml.day   attributes.origdocdate.try(:strftime, "%d")
         end
         xml.referenceno attributes.referenceno
         xml.termname    attributes.termname
         xml.datedue do
-          xml.year  attributes.datedue.try(:strftime, '%Y')
-          xml.month attributes.datedue.try(:strftime, '%m')
-          xml.day   attributes.datedue.try(:strftime, '%d')
+          xml.year  attributes.datedue.try(:strftime, "%Y")
+          xml.month attributes.datedue.try(:strftime, "%m")
+          xml.day   attributes.datedue.try(:strftime, "%d")
         end
         xml.message        attributes.message
         xml.shippingmethod attributes.shippingmethod
@@ -41,9 +41,9 @@ module Intacct
         xml.basecurr       attributes.basecurr
         xml.currency       attributes.currency
         xml.exchratedate do
-          xml.year  attributes.exchratedate.try(:strftime, '%Y')
-          xml.month attributes.exchratedate.try(:strftime, '%m')
-          xml.day   attributes.exchratedate.try(:strftime, '%d')
+          xml.year  attributes.exchratedate.try(:strftime, "%Y")
+          xml.month attributes.exchratedate.try(:strftime, "%m")
+          xml.day   attributes.exchratedate.try(:strftime, "%d")
         end
         xml.exchratetype   attributes.exchratetype
         xml.vsoepricelist  attributes.vsoepricelist

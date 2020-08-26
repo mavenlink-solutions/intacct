@@ -2,15 +2,15 @@ module Intacct
   module Actions
     class Read < Base
       def request(options)
-        raise 'Must specify a value for `key` in the options hash.' unless options[:key]
+        raise "Must specify a value for `key` in the options hash." unless options[:key]
 
         Intacct::XmlRequest.build_xml(client, action) do |xml|
-          xml.function(controlid: 'f4') do
+          xml.function(controlid: "f4") do
             xml.read do
               xml.object klass.api_name.upcase
               xml.keys options[:key]
-              xml.fields '*'
-              xml.returnFormat 'xml'
+              xml.fields "*"
+              xml.returnFormat "xml"
               xml.docparid options[:docparid] if options[:docparid].present?
             end
           end
@@ -18,14 +18,14 @@ module Intacct
       end
 
       def response_body
-        raw = @response.at('//result/data')
+        raw = @response.at("//result/data")
         return unless raw
 
-        Intacct::Utils.instance.downcase_keys(Hash.from_xml(raw.to_xml)['data'][list_type])
+        Intacct::Utils.instance.downcase_keys(Hash.from_xml(raw.to_xml)["data"][list_type])
       end
 
       def list_type
-        @response.at('//result/data').attributes['listtype'].content
+        @response.at("//result/data").attributes["listtype"].content
       end
 
       module Helper
@@ -33,7 +33,7 @@ module Intacct
 
         module ClassMethods
           def read(client, options = {})
-            response = Intacct::Actions::Read.new(client, self, 'read', options).perform
+            response = Intacct::Actions::Read.new(client, self, "read", options).perform
 
             return unless response.body
 

@@ -1,7 +1,7 @@
 module Intacct
   module Models
     class ProjectResource < Intacct::Base
-      api_name 'projectresources'
+      api_name "projectresources"
 
       def create_xml(xml)
         xml.projectid attributes.projectid

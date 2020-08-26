@@ -2,10 +2,10 @@ module Intacct
   module Actions
     class Get < Base
       def request(options)
-        raise 'Must specify a value for `key` in the options hash.' unless options[:key]
+        raise "Must specify a value for `key` in the options hash." unless options[:key]
 
         Intacct::XmlRequest.build_xml(client, action) do |xml|
-          xml.function(controlid: 'f4') do
+          xml.function(controlid: "f4") do
             xml.get(object: klass.api_name, key: options[:key]) do
               if options[:fields]
                 xml.fields do
@@ -27,7 +27,7 @@ module Intacct
       end
 
       def list_type
-        @response.at('//result/listtype').content
+        @response.at("//result/listtype").content
       end
 
       module Helper
@@ -35,7 +35,7 @@ module Intacct
 
         module ClassMethods
           def get(client, options = {})
-            response = Intacct::Actions::Get.new(client, self, 'get', options).perform
+            response = Intacct::Actions::Get.new(client, self, "get", options).perform
 
             new(client, response.body) if response.success?
           end

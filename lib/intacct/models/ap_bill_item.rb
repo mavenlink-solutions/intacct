@@ -1,7 +1,7 @@
 module Intacct
   module Models
     class ApBillItem < Base
-      api_name 'APBILLITEM'
+      api_name "APBILLITEM"
     end
   end
 end

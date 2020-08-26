@@ -1,14 +1,14 @@
-require 'intacct/actions/base'
-require 'intacct/actions/get'
-require 'intacct/actions/read'
-require 'intacct/actions/read_by_query'
-require 'intacct/actions/read_more'
-require 'intacct/actions/create'
-require 'intacct/actions/update'
-require 'intacct/actions/update_all'
-require 'intacct/actions/bulk_create'
-require 'intacct/actions/inspect'
-require 'intacct/actions/delete'
+require "intacct/actions/base"
+require "intacct/actions/get"
+require "intacct/actions/read"
+require "intacct/actions/read_by_query"
+require "intacct/actions/read_more"
+require "intacct/actions/create"
+require "intacct/actions/update"
+require "intacct/actions/update_all"
+require "intacct/actions/bulk_create"
+require "intacct/actions/inspect"
+require "intacct/actions/delete"
 
 module Intacct
   module Actions

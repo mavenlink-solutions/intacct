@@ -17,11 +17,11 @@ module Intacct
     end
 
     def create_xml(_xml)
-      raise NotImplementedError, 'This model does not support create.'
+      raise NotImplementedError, "This model does not support create."
     end
 
     def update_xml(_xml)
-      raise NotImplementedError, 'This model does not support update.'
+      raise NotImplementedError, "This model does not support update."
     end
 
     def id_attribute
@@ -29,7 +29,7 @@ module Intacct
     end
 
     def method_missing(method_name, *args)
-      stripped_method_name = method_name.to_s.gsub(/=$/, '')
+      stripped_method_name = method_name.to_s.gsub(/=$/, "")
 
       if stripped_method_name.to_sym.in? attributes.to_h.keys
         attributes.send(method_name, *args)
@@ -51,7 +51,7 @@ module Intacct
     end
 
     def persisted?
-      !!attributes['recordno']
+      !!attributes["recordno"]
     end
 
     private
@@ -89,7 +89,7 @@ module Intacct
     end
 
     def successful?
-      if (status = response.at('//result//status')) && (status.content == 'success')
+      if (status = response.at("//result//status")) && (status.content == "success")
         true
       else
         false
@@ -138,8 +138,8 @@ module Intacct
 
     def self.formatted_error_message(errors)
       [errors].flatten.map do |error|
-        error['description'].presence || error['description2'] || 'Undefined error'
-      end .join(' ')
+        error["description"].presence || error["description2"] || "Undefined error"
+      end .join(" ")
     end
   end
 end

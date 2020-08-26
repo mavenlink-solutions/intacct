@@ -1,18 +1,18 @@
 module Intacct
   module Models
     class Expense < Intacct::Base
-      api_name 'EEXPENSES'
+      api_name "EEXPENSES"
 
       def create_name
-        'create_expensereport'
+        "create_expensereport"
       end
 
       def create_xml(xml)
         xml.employeeid attributes.employeeid
         xml.datecreated do
-          xml.year  attributes.datecreated.try(:strftime, '%Y')
-          xml.month attributes.datecreated.try(:strftime, '%m')
-          xml.day   attributes.datecreated.try(:strftime, '%d')
+          xml.year  attributes.datecreated.try(:strftime, "%Y")
+          xml.month attributes.datecreated.try(:strftime, "%m")
+          xml.day   attributes.datecreated.try(:strftime, "%d")
         end
         xml.expensereportno attributes.expensereportno
         xml.description     attributes.description
@@ -20,9 +20,9 @@ module Intacct
         xml.basecurr        attributes.basecurr
         xml.currency        attributes.currency
         xml.dateposted do
-          xml.year  attributes.dateposted.try(:strftime, '%Y')
-          xml.month attributes.dateposted.try(:strftime, '%m')
-          xml.day   attributes.dateposted.try(:strftime, '%d')
+          xml.year  attributes.dateposted.try(:strftime, "%Y")
+          xml.month attributes.dateposted.try(:strftime, "%m")
+          xml.day   attributes.dateposted.try(:strftime, "%d")
         end
         xml.state attributes.state
 
@@ -32,9 +32,9 @@ module Intacct
               xml.expensetype  expense[:expensetype]
               xml.amount       expense[:amount]
               xml.expensedate  do
-                xml.year  expense[:expensedate].try(:strftime, '%Y')
-                xml.month expense[:expensedate].try(:strftime, '%m')
-                xml.day   expense[:expensedate].try(:strftime, '%d')
+                xml.year  expense[:expensedate].try(:strftime, "%Y")
+                xml.month expense[:expensedate].try(:strftime, "%m")
+                xml.day   expense[:expensedate].try(:strftime, "%d")
               end
               xml.memo         expense[:memo]
               xml.paidfor      expense[:paidfor]
@@ -52,9 +52,9 @@ module Intacct
         xml.recordno recordno
         xml.employeeid attributes.employeeid
         xml.datecreated do
-          xml.year  attributes.datecreated.try(:strftime, '%Y')
-          xml.month attributes.datecreated.try(:strftime, '%m')
-          xml.day   attributes.datecreated.try(:strftime, '%d')
+          xml.year  attributes.datecreated.try(:strftime, "%Y")
+          xml.month attributes.datecreated.try(:strftime, "%m")
+          xml.day   attributes.datecreated.try(:strftime, "%d")
         end
         xml.expensereportno attributes.expensereportno
         xml.description     attributes.description
@@ -82,16 +82,16 @@ module Intacct
                 xml.currency     updateexpense[:currency]
                 xml.trx_amount   updateexpense[:trx_amount]
                 xml.exchratedate do
-                  xml.year  updateexpense[:exchratedate].try(:strftime, '%Y')
-                  xml.month updateexpense[:exchratedate].try(:strftime, '%m')
-                  xml.day   updateexpense[:exchratedate].try(:strftime, '%d')
+                  xml.year  updateexpense[:exchratedate].try(:strftime, "%Y")
+                  xml.month updateexpense[:exchratedate].try(:strftime, "%m")
+                  xml.day   updateexpense[:exchratedate].try(:strftime, "%d")
                 end
                 xml.exchratetype  updateexpense[:exchratetype]
                 xml.exchrate      updateexpense[:exchrate]
                 xml.expensedate do
-                  xml.year  updateexpense[:expensedate].try(:strftime, '%Y')
-                  xml.month updateexpense[:expensedate].try(:strftime, '%m')
-                  xml.day   updateexpense[:expensedate].try(:strftime, '%d')
+                  xml.year  updateexpense[:expensedate].try(:strftime, "%Y")
+                  xml.month updateexpense[:expensedate].try(:strftime, "%m")
+                  xml.day   updateexpense[:expensedate].try(:strftime, "%d")
                 end
                 xml.memo         updateexpense[:memo]
                 xml.locationid   updateexpense[:locationid]

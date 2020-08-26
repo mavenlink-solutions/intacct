@@ -3,7 +3,7 @@ module Intacct
     class Update < Base
       def request(_options)
         Intacct::XmlRequest.build_xml(client, action) do |xml|
-          xml.function(controlid: '1') do
+          xml.function(controlid: "1") do
             xml.update do
               xml.send(klass.api_name) do
                 klass.update_xml(xml)
@@ -22,15 +22,15 @@ module Intacct
       end
 
       def response_errors
-        raw = @response.at('//result/errormessage')
+        raw = @response.at("//result/errormessage")
         return unless raw
 
-        Hash.from_xml(raw.to_xml)['errormessage']['error']
+        Hash.from_xml(raw.to_xml)["errormessage"]["error"]
       end
 
       module Helper
         def update(options = {})
-          response = Intacct::Actions::Update.new(client, self, 'update', options).perform
+          response = Intacct::Actions::Update.new(client, self, "update", options).perform
 
           @errors = response.errors
 

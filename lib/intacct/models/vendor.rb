@@ -2,8 +2,8 @@ module Intacct
   module Models
     class Vendor < Intacct::Base
       def create
-        send_xml('create') do |xml|
-          xml.function(controlid: '1') do
+        send_xml("create") do |xml|
+          xml.function(controlid: "1") do
             xml.create_vendor do
               xml.vendorid intacct_object_id
               vendor_xml xml
@@ -18,8 +18,8 @@ module Intacct
         @attributes = updated_vendor if updated_vendor
         return false if attributes.intacct_system_id.nil?
 
-        send_xml('update') do |xml|
-          xml.function(controlid: '1') do
+        send_xml("update") do |xml|
+          xml.function(controlid: "1") do
             xml.update_vendor(vendorid: intacct_system_id) do
               vendor_xml xml
             end
@@ -32,8 +32,8 @@ module Intacct
       def delete
         return false if attributes.intacct_system_id.nil?
 
-        @response = send_xml('delete') do |xml|
-          xml.function(controlid: '1') do
+        @response = send_xml("delete") do |xml|
+          xml.function(controlid: "1") do
             xml.delete_vendor(vendorid: intacct_system_id)
           end
         end
@@ -48,10 +48,10 @@ module Intacct
       def vendor_xml(xml)
         xml.name (attributes.company_name.present? ? attributes.company_name : attributes.full_name).to_s
         # [todo] - Custom
-        xml.vendtype 'Appraiser'
+        xml.vendtype "Appraiser"
         xml.taxid attributes.tax_id
-        xml.billingtype 'balanceforward'
-        xml.status 'active'
+        xml.billingtype "balanceforward"
+        xml.status "active"
         xml.contactinfo do
           xml.contact do
             xml.contactname "#{attributes.last_name}, #{attributes.first_name} (#{attributes.id})"
@@ -74,11 +74,11 @@ module Intacct
           end
         end
         if attributes.ach_routing_number.present?
-          xml.achenabled (attributes.ach_routing_number.present? ? 'true' : 'false').to_s
+          xml.achenabled (attributes.ach_routing_number.present? ? "true" : "false").to_s
           xml.achbankroutingnumber attributes.ach_routing_number
           xml.achaccountnumber attributes.ach_account_number
-          xml.achaccounttype (attributes.ach_account_type.capitalize + ' Account').to_s
-          xml.achremittancetype ((attributes.ach_account_classification == 'business' ? 'CCD' : 'PPD')).to_s
+          xml.achaccounttype (attributes.ach_account_type.capitalize + " Account").to_s
+          xml.achremittancetype ((attributes.ach_account_classification == "business" ? "CCD" : "PPD")).to_s
         end
       end
     end

@@ -3,7 +3,7 @@ module Intacct
     class UpdateAll < Base
       def request(_options)
         Intacct::XmlRequest.build_xml(client, action) do |xml|
-          xml.function(controlid: '1') do
+          xml.function(controlid: "1") do
             xml.update do
               # TODO: Finish this
             end
@@ -26,7 +26,7 @@ module Intacct
               ids: ids,
               attributes: attributes
             }
-            response = Intacct::Actions::UpdateAll.new(client, self, 'update_all', params).perform
+            response = Intacct::Actions::UpdateAll.new(client, self, "update_all", params).perform
 
             @errors = response.errors
 

@@ -4,7 +4,7 @@ module Intacct
 
     attr_accessor :client, :attributes, :action, :intacct_action, :model_class, :model
 
-    URL = 'https://www.intacct.com/ia/xml/xmlgw.phtml'.freeze
+    URL = "https://www.intacct.com/ia/xml/xmlgw.phtml".freeze
 
     def self.build_xml(client, action, &block)
       new(client, action).build_xml(&block)
@@ -33,11 +33,11 @@ module Intacct
           xml.control do
             xml.senderid client.credentials[:xml_sender_id]
             xml.password client.credentials[:xml_password]
-            xml.controlid 'Intacct Ruby Library'
-            xml.uniqueid 'false'
-            xml.dtdversion '3.0'
+            xml.controlid "Intacct Ruby Library"
+            xml.uniqueid "false"
+            xml.dtdversion "3.0"
           end
-          xml.operation(transaction: 'false') do
+          xml.operation(transaction: "false") do
             xml.authentication do
               xml.login do
                 xml.userid client.credentials[:user_id]
@@ -56,7 +56,7 @@ module Intacct
 
       uri = URI(URL)
 
-      res = Net::HTTP.post_form(uri, 'xmlrequest' => xml)
+      res = Net::HTTP.post_form(uri, "xmlrequest" => xml)
       Nokogiri::XML(res.body)
     end
   end

@@ -2,10 +2,10 @@ module Intacct
   module Actions
     class Delete < Base
       def request(options)
-        raise 'Must specify a value for `key` in the options hash.' unless options[:key]
+        raise "Must specify a value for `key` in the options hash." unless options[:key]
 
         Intacct::XmlRequest.build_xml(client, action) do |xml|
-          xml.function(controlid: '1') do
+          xml.function(controlid: "1") do
             xml.delete do
               xml.object klass.api_name
               xml.keys options[:key]
@@ -40,7 +40,7 @@ module Intacct
 
         module ClassMethods
           def delete(client, options = {})
-            response = Intacct::Actions::Delete.new(client, self, 'delete', options).perform
+            response = Intacct::Actions::Delete.new(client, self, "delete", options).perform
 
             response.success?
           end

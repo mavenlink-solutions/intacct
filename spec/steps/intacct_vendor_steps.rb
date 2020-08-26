@@ -1,19 +1,19 @@
 module IntacctVendorSteps
-  step('I have a vendor') { vendor }
+  step("I have a vendor") { vendor }
 
-  step 'I create an Intacct Vendor object' do
+  step "I create an Intacct Vendor object" do
     @intacct_vendor = Intacct::Models::Vendor.new vendor
   end
 
-  step 'I use the #create method' do
+  step "I use the #create method" do
     @response = @intacct_vendor.create
   end
 
-  step 'I use the #update method' do
+  step "I use the #update method" do
     @response = @intacct_vendor.update
   end
 
-  step 'I use the #delete method' do
+  step "I use the #delete method" do
     @response = @intacct_vendor.delete
   end
 

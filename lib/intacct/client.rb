@@ -11,7 +11,7 @@ module Intacct
         company_id: options.fetch(:company_id, Intacct.company_id)
       }
 
-      raise ArgumentError, 'Missing credential value.' if credentials.values.any?(&:nil?)
+      raise ArgumentError, "Missing credential value." if credentials.values.any?(&:nil?)
     end
 
     def method_missing(method_name, *_args)

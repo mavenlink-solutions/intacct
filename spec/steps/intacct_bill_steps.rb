@@ -3,18 +3,18 @@ module IntacctBillSteps
     attr_accessor :intacct_key
   end
 
-  step 'I have setup the correct settings' do
+  step "I have setup the correct settings" do
     default_setup
     custom_fields_for_auto
   end
 
-  step('I have an payment, customer and vendor') do
+  step("I have an payment, customer and vendor") do
     payment
     customer
     vendor
   end
 
-  step 'I create an Intacct Bill object' do
+  step "I create an Intacct Bill object" do
     @intacct_bill = Intacct::Bill.new({
                                         payment: payment,
                                         customer: customer,
@@ -22,7 +22,7 @@ module IntacctBillSteps
                                       })
   end
 
-  step 'I use the #create method' do
+  step "I use the #create method" do
     # We need to remove the fake intacct_system_id so it creates a real one
     @intacct_bill.attributes.payment.intacct_system_id = nil
     @intacct_bill.attributes.customer.intacct_system_id = nil
@@ -31,7 +31,7 @@ module IntacctBillSteps
     IntacctBillSteps.intacct_key = @intacct_bill.attributes.payment.intacct_key
   end
 
-  step 'I use the #delete method' do
+  step "I use the #delete method" do
     @intacct_bill.attributes.payment.intacct_key = IntacctBillSteps.intacct_key
     @response = @intacct_bill.delete
     if @response
@@ -45,106 +45,106 @@ module IntacctBillSteps
       custom_bill_fields do |xml|
         xml.billno intacct_object_id # intact bill id
         xml.ponumber attributes.payment.claim.claimnumber
-        xml.description 'some description'
+        xml.description "some description"
         xml.externalid "AUTO-#{attributes.payment.id}"
-        xml.basecurr 'USD'
-        xml.currency 'USD'
-        xml.exchratetype 'Intacct Daily Rate'
+        xml.basecurr "USD"
+        xml.currency "USD"
+        xml.exchratetype "Intacct Daily Rate"
         xml.customfields do
           xml.customfield do
-            xml.customfieldname 'CLAIM_NUMBER_ACD'
+            xml.customfieldname "CLAIM_NUMBER_ACD"
             xml.customfieldvalue attributes.payment.claim.dlnumber
           end
           xml.customfield do
-            xml.customfieldname 'CLAIM_NUMBER_CLIENT'
+            xml.customfieldname "CLAIM_NUMBER_CLIENT"
             xml.customfieldvalue attributes.payment.claim.claimnumber
           end
           xml.customfield do
-            xml.customfieldname 'VEHICLE_YEAR'
+            xml.customfieldname "VEHICLE_YEAR"
             xml.customfieldvalue attributes.payment.claim.vehicle.year
           end
           xml.customfield do
-            xml.customfieldname 'VEHICLE_MAKE'
+            xml.customfieldname "VEHICLE_MAKE"
             xml.customfieldvalue attributes.payment.claim.vehicle.make
           end
           xml.customfield do
-            xml.customfieldname 'VEHICLE_MODEL'
+            xml.customfieldname "VEHICLE_MODEL"
             xml.customfieldvalue attributes.payment.claim.vehicle.model
           end
           xml.customfield do
-            xml.customfieldname 'VEHICLE_TYPE'
+            xml.customfieldname "VEHICLE_TYPE"
             xml.customfieldvalue attributes.payment.claim.appraisal_type
           end
           xml.customfield do
-            xml.customfieldname 'NAME_OWNER'
+            xml.customfieldname "NAME_OWNER"
             xml.customfieldvalue attributes.payment.claim.owner.full_name
           end
           xml.customfield do
-            xml.customfieldname 'NAME_INSURED'
-            xml.customfieldvalue attributes.payment.claim.owner.insuredorclaimant == 'INSURED' ? attributes.payment.claim.owner.full_name : attributes.payment.claim.insured_full_name
+            xml.customfieldname "NAME_INSURED"
+            xml.customfieldvalue attributes.payment.claim.owner.insuredorclaimant == "INSURED" ? attributes.payment.claim.owner.full_name : attributes.payment.claim.insured_full_name
           end
           xml.customfield do
-            xml.customfieldname 'NAME_CLAIMANT'
-            xml.customfieldvalue attributes.payment.claim.owner.insuredorclaimant == 'CLAIMANT' ? attributes.payment.claim.owner.full_name : ''
+            xml.customfieldname "NAME_CLAIMANT"
+            xml.customfieldvalue attributes.payment.claim.owner.insuredorclaimant == "CLAIMANT" ? attributes.payment.claim.owner.full_name : ""
           end
           xml.customfield do
-            xml.customfieldname 'LOCATION_CITY'
+            xml.customfieldname "LOCATION_CITY"
             xml.customfieldvalue attributes.payment.claim.vehicle.address.city
           end
           xml.customfield do
-            xml.customfieldname 'LOCATION_STATE'
+            xml.customfieldname "LOCATION_STATE"
             xml.customfieldvalue attributes.payment.claim.vehicle.address.state
           end
           xml.customfield do
-            xml.customfieldname 'LOCATION_ZIP'
+            xml.customfieldname "LOCATION_ZIP"
             xml.customfieldvalue attributes.payment.claim.vehicle.address.zipcode
           end
           xml.customfield do
-            xml.customfieldname 'MILEAGE_RT_BILLABLE'
+            xml.customfieldname "MILEAGE_RT_BILLABLE"
             xml.customfieldvalue 100
           end
           xml.customfield do
-            xml.customfieldname 'MILEAGE_RT_TOTAL'
+            xml.customfieldname "MILEAGE_RT_TOTAL"
             xml.customfieldvalue 100
           end
           xml.customfield do
-            xml.customfieldname 'MILEAGE_RATE'
+            xml.customfieldname "MILEAGE_RATE"
             xml.customfieldvalue attributes.payment.mileage_rate
           end
           xml.customfield do
-            xml.customfieldname 'NAME_ADJUSTER'
+            xml.customfieldname "NAME_ADJUSTER"
             xml.customfieldvalue "#{attributes.payment.claim.adjuster.last_name}, #{attributes.payment.claim.adjuster.first_name}"
           end
           xml.customfield do
-            xml.customfieldname 'CLAIM_CREATED_DATE'
-            xml.customfieldvalue attributes.payment.claim.dtcreated.strftime('%m/%d/%Y')
+            xml.customfieldname "CLAIM_CREATED_DATE"
+            xml.customfieldvalue attributes.payment.claim.dtcreated.strftime("%m/%d/%Y")
           end
           xml.customfield do
-            xml.customfieldname 'NAME_PROCESSOR'
+            xml.customfieldname "NAME_PROCESSOR"
             xml.customfieldvalue attributes.payment.creator.full_name
           end
           if attributes.payment.claim.dtloss.present?
             xml.customfield do
-              xml.customfieldname 'LOSS_DATE'
-              xml.customfieldvalue attributes.payment.claim.dtloss.strftime('%m/%d/%Y')
+              xml.customfieldname "LOSS_DATE"
+              xml.customfieldvalue attributes.payment.claim.dtloss.strftime("%m/%d/%Y")
             end
           end
           xml.customfield do
-            xml.customfieldname 'LOSS_CATEGORY'
+            xml.customfieldname "LOSS_CATEGORY"
             xml.customfieldvalue attributes.payment.claim.coveragetype
           end
           if attributes.payment.claim.estimate_id.present?
             xml.customfield do
-              xml.customfieldname 'LOSS_ESTIMATE_AMOUNT'
+              xml.customfieldname "LOSS_ESTIMATE_AMOUNT"
               xml.customfieldvalue attributes.payment.claim.estimate.estimate_amt
             end
             xml.customfield do
-              xml.customfieldname 'LOSS_FINAL_AMOUNT'
+              xml.customfieldname "LOSS_FINAL_AMOUNT"
               xml.customfieldvalue attributes.payment.claim.estimate.estimate_final_amt
             end
           end
           xml.customfield do
-            xml.customfieldname 'ASSIGNMENT_TYPE'
+            xml.customfieldname "ASSIGNMENT_TYPE"
             xml.customfieldvalue attributes.payment.type
           end
         end
@@ -156,11 +156,11 @@ module IntacctBillSteps
             xml.glaccountno 4040
             xml.amount 100
             xml.memo attributes.payment.note
-            xml.locationid 'ACDCorp'
+            xml.locationid "ACDCorp"
             xml.customerid attributes.customer.intacct_system_id
             xml.vendorid attributes.vendor.intacct_system_id
             xml.employeeid
-            xml.classid 'A100' # hardcoded = will always be A100
+            xml.classid "A100" # hardcoded = will always be A100
           end
           # set mileage amount if exists
           if attributes.payment.mileage_amt != 0
@@ -168,11 +168,11 @@ module IntacctBillSteps
               xml.glaccountno 4040
               xml.amount 100
               xml.memo attributes.payment.note
-              xml.locationid 'ACDCorp'
+              xml.locationid "ACDCorp"
               xml.customerid attributes.customer.intacct_system_id
               xml.vendorid attributes.vendor.intacct_system_id
               xml.employeeid
-              xml.classid 'A100' # hardcoded = will always be A100
+              xml.classid "A100" # hardcoded = will always be A100
             end
           end
         end

@@ -3,7 +3,7 @@ module Intacct
     class Bill < Intacct::Base
       attr_accessor :customer_data
 
-      api_name 'APBILL'
+      api_name "APBILL"
 
       # define_hook :custom_bill_fields, :bill_item_fields
 
@@ -13,20 +13,20 @@ module Intacct
         # Need to create the customer if one doesn't exist
         unless attributes.customer.intacct_system_id
           intacct_customer = Intacct::Customer.new attributes.customer
-          raise 'Could not grab Intacct customer data' unless intacct_customer.create
+          raise "Could not grab Intacct customer data" unless intacct_customer.create
         end
 
         # Create vendor if we have one and not in Intacct
         if attributes.vendor && attributes.vendor.intacct_system_id.blank?
           intacct_vendor = Intacct::Vendor.new attributes.vendor
-          raise 'Could not create vendor' unless intacct_vendor.create
+          raise "Could not create vendor" unless intacct_vendor.create
 
           attributes.vendor = intacct_vendor.attributes
         end
 
-        send_xml('create') do |xml|
-          xml.function(controlid: 'f1') do
-            xml.send('create_bill') do
+        send_xml("create") do |xml|
+          xml.function(controlid: "f1") do
+            xml.send("create_bill") do
               bill_xml xml
             end
           end
@@ -38,9 +38,9 @@ module Intacct
       def delete
         return false unless attributes.payment.intacct_system_id.present?
 
-        send_xml('delete') do |xml|
-          xml.function(controlid: '1') do
-            xml.delete_bill(externalkey: 'false', key: attributes.payment.intacct_key)
+        send_xml("delete") do |xml|
+          xml.function(controlid: "1") do
+            xml.delete_bill(externalkey: "false", key: attributes.payment.intacct_key)
           end
         end
 
@@ -54,19 +54,19 @@ module Intacct
       def bill_xml(xml)
         xml.vendorid attributes.vendor.intacct_system_id
         xml.datecreated do
-          xml.year attributes.payment.created_at.strftime('%Y')
-          xml.month attributes.payment.created_at.strftime('%m')
-          xml.day attributes.payment.created_at.strftime('%d')
+          xml.year attributes.payment.created_at.strftime("%Y")
+          xml.month attributes.payment.created_at.strftime("%m")
+          xml.day attributes.payment.created_at.strftime("%d")
         end
         xml.dateposted do
-          xml.year attributes.payment.created_at.strftime('%Y')
-          xml.month attributes.payment.created_at.strftime('%m')
-          xml.day attributes.payment.created_at.strftime('%d')
+          xml.year attributes.payment.created_at.strftime("%Y")
+          xml.month attributes.payment.created_at.strftime("%m")
+          xml.day attributes.payment.created_at.strftime("%d")
         end
         xml.datedue do
-          xml.year attributes.payment.paid_at.strftime('%Y')
-          xml.month attributes.payment.paid_at.strftime('%m')
-          xml.day attributes.payment.paid_at.strftime('%d')
+          xml.year attributes.payment.paid_at.strftime("%Y")
+          xml.month attributes.payment.paid_at.strftime("%m")
+          xml.day attributes.payment.paid_at.strftime("%d")
         end
         run_hook :custom_bill_fields, xml
         run_hook :bill_item_fields, xml

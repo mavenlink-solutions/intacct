@@ -38,7 +38,7 @@ module Helpers
     @customer ||= OpenStruct.new({
                                    id: current_random_id,
                                    intacct_system_id: current_random_id,
-                                   name: 'RSpec Company'
+                                   name: "RSpec Company"
                                  })
   end
 
@@ -46,14 +46,14 @@ module Helpers
     @vendor ||= OpenStruct.new({
                                  id: current_random_id,
                                  intacct_system_id: current_random_id,
-                                 first_name: 'Rspec',
-                                 last_name: 'Test',
-                                 full_name: 'Rspec Test',
-                                 email: 'test@example.com',
-                                 ach_account_number: '123456789',
-                                 ach_routing_number: '123456789',
-                                 ach_account_type: 'savings',
-                                 ach_account_classification: 'business',
+                                 first_name: "Rspec",
+                                 last_name: "Test",
+                                 full_name: "Rspec Test",
+                                 email: "test@example.com",
+                                 ach_account_number: "123456789",
+                                 ach_routing_number: "123456789",
+                                 ach_account_type: "savings",
+                                 ach_account_classification: "business",
                                  ach_last_updated_at: Time.now,
                                  billing_address: address
                                })
@@ -61,7 +61,7 @@ module Helpers
 
   def payment
     @payment ||= OpenStruct.new(invoice.to_h.merge({
-                                                     type: 'some_type',
+                                                     type: "some_type",
                                                      paid_at: DateTime.now,
                                                      base_amt: Faker::Number.number(2),
                                                      additional_amt: Faker::Number.number(2)
@@ -83,18 +83,18 @@ module Helpers
                                   claim: OpenStruct.new({
                                                           dlnumber: Faker::Number.number(6),
                                                           claimnumber: Faker::Number.number(6),
-                                                          appraisal_type: 'auto',
+                                                          appraisal_type: "auto",
                                                           insured_full_name: Faker::Name.name,
                                                           appraiser_driving_distance: Faker::Number.number(2),
                                                           dtcreated: DateTime.now,
                                                           vehicle: OpenStruct.new({
                                                                                     year: 2001,
                                                                                     make: Faker::Name.name,
-                                                                                    model: 'A1',
+                                                                                    model: "A1",
                                                                                     address: address
                                                                                   }),
                                                           owner: person do
-                                                                   { insuredorclaimant: 'INSURED' }
+                                                                   { insuredorclaimant: "INSURED" }
                                                                  end,
                                                           adjuster: person
                                                         })
@@ -103,15 +103,15 @@ module Helpers
 
   def default_setup
     Intacct.setup do |config|
-      config.invoice_prefix  = 'AUTO-'
-      config.bill_prefix     = 'AUTO-'
-      config.customer_prefix = 'C'
-      config.vendor_prefix   = 'A'
-      config.xml_sender_id  = ENV['INTACCT_XML_SENDER_ID']
-      config.xml_password   = ENV['INTACCT_XML_PASSWORD']
-      config.app_user_id    = ENV['INTACCT_USER_ID']
-      config.app_company_id = ENV['INTACCT_COMPANY_ID']
-      config.app_password   = ENV['INTACCT_PASSWORD']
+      config.invoice_prefix  = "AUTO-"
+      config.bill_prefix     = "AUTO-"
+      config.customer_prefix = "C"
+      config.vendor_prefix   = "A"
+      config.xml_sender_id  = ENV["INTACCT_XML_SENDER_ID"]
+      config.xml_password   = ENV["INTACCT_XML_PASSWORD"]
+      config.app_user_id    = ENV["INTACCT_USER_ID"]
+      config.app_company_id = ENV["INTACCT_COMPANY_ID"]
+      config.app_password   = ENV["INTACCT_PASSWORD"]
       yield if block_given?
     end
   end

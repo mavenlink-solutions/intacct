@@ -64,8 +64,8 @@ module Intacct
         xml.MANAGERID attributes.managerid if attributes.managerid.present?
         xml.CUSTUSERID attributes.custuserid if attributes.custuserid.present?
         xml.SALESCONTACTID attributes.salescontactid if attributes.salescontactid.present?
-        xml.BEGINDATE attributes.begindate.strftime('%m/%d/%Y') if attributes.begindate.present?
-        xml.ENDDATE attributes.enddate.strftime('%m/%d/%Y') if attributes.enddate.present?
+        xml.BEGINDATE attributes.begindate.strftime("%m/%d/%Y") if attributes.begindate.present?
+        xml.ENDDATE attributes.enddate.strftime("%m/%d/%Y") if attributes.enddate.present?
         xml.DEPARTMENTID attributes.departmentid if attributes.departmentid.present?
         xml.LOCATIONID attributes.locationid if attributes.locationid.present?
         xml.CLASSID attributes.classid if attributes.classid.present?
@@ -105,7 +105,7 @@ module Intacct
                     xml.EMPLOYEEID attributes.employeeid
                     xml.ITEMID attributes.itemid if attributes.itemid.present?
                     xml.RESOURCEDESCRIPTION attributes.resourcedescription if attributes.resourcedescription.present?
-                    xml.STARTDATE attributes.startdate.strftime('%m/%d/%Y') if attributes.startdate.present?
+                    xml.STARTDATE attributes.startdate.strftime("%m/%d/%Y") if attributes.startdate.present?
                     xml.BILLINGRATE attributes.billingrate if attributes.billingrate.present?
                     xml.EXPENSERATE attributes.expenserate if attributes.expenserate.present?
                     xml.POAPRATE attributes.poaprate if attributes.poaprate.present?
