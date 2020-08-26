@@ -1,26 +1,24 @@
 module Intacct
   module Actions
     class BulkCreate < Base
-
       def request(new_records)
         Intacct::XmlRequest.build_xml(client, action) do |xml|
-          xml.function(controlid: '1') {
-            xml.create {
-
-              new_records.each { |new_record|
-                xml.send(klass.api_name) {
-                  new_record.each { |key, value|
+          xml.function(controlid: '1') do
+            xml.create do
+              new_records.each do |new_record|
+                xml.send(klass.api_name) do
+                  new_record.each do |key, value|
                     xml.send(key, value)
-                  }
-                }
-              }
-            }
-          }
+                  end
+                end
+              end
+            end
+          end
         end
       end
 
       def response_body
-        raw = @response.at("//result/data")
+        raw = @response.at('//result/data')
         return unless raw
 
         parsed = Hash.from_xml(raw.to_xml)['data'][list_type]
@@ -49,15 +47,14 @@ module Intacct
 
         module ClassMethods
           def bulk_create(client, attributes)
-            response = Intacct::Actions::BulkCreate.new(client, self, 'bulk_create', attributes).perform
+            response = Intacct::Actions::BulkCreate.new(client, self, 'bulk_create',
+                                                        attributes).perform
 
             @errors = response.errors
 
-            if response.success?
-              response.body
-            else
-              raise Intacct::Error, formatted_error_message(response.errors)
-            end
+            raise Intacct::Error, formatted_error_message(response.errors) unless response.success?
+
+            response.body
           end
         end
       end

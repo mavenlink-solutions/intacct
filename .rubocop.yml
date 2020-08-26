@@ -1,0 +1,28 @@
+inherit_from: .rubocop_todo.yml
+
+AllCops:
+  Exclude:
+    - 'bin/bundle'
+
+Layout/EndAlignment:
+  AutoCorrect: true
+
+Layout/LineLength:
+  Max: 200
+  AutoCorrect: true
+
+Layout/MultilineArrayLineBreaks:
+  Enabled: true
+
+Lint/ShadowingOuterLocalVariable:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/GuardClause:
+  Exclude:
+    - 'lib/intacct/models/**/*'

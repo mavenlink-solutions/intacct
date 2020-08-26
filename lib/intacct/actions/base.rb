@@ -16,10 +16,11 @@ module Intacct
       end
 
       def build_response
-        Intacct::Response.new(client, success: success?, body: response_body, errors: response_errors)
+        Intacct::Response.new(client, success: success?, body: response_body,
+                                      errors: response_errors)
       end
 
-      def request(options)
+      def request(_options)
         raise NotImplementedError, 'Implement this method in the subclass'
       end
 
@@ -43,7 +44,6 @@ module Intacct
       def list_type
         raise NotImplementedError, 'Implement this method in the subclass'
       end
-
     end
   end
 end

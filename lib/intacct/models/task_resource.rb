@@ -1,7 +1,6 @@
 module Intacct
   module Models
     class TaskResource < Intacct::Base
-
       api_name 'TASKRESOURCES'
 
       def create_xml(xml)

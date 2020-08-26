@@ -1,7 +1,54 @@
 module Intacct
   module Models
     class Project < Intacct::Base
-      CREATE_KEYS = [:projectid, :name, :description, :parentid, :invoicewithparent, :projectcategory, :projecttype, :projectstatus, :customerid, :managerid, :custuserid, :salescontactid, :begindate, :enddate, :departmentid, :locationid, :classid, :currency, :billingtype, :termname, :docnumber, :billto, :shipto, :contactinfo, :sonumber, :ponumber, :poamount, :pqnumber, :budgetamount, :budgetedcost, :budgetqty, :userrestrictions, :obspercentcomplete, :budgetid, :billingrate, :billingpricing, :expenserate, :expensepricing, :poaprate, :poappricing, :status, :supdocid, :invoicemessage, :invoicecurrency, :projectresources, :billingovermax, :excludeexpenses, :customfields].freeze
+      CREATE_KEYS = %i[projectid
+                       name
+                       description
+                       parentid
+                       invoicewithparent
+                       projectcategory
+                       projecttype
+                       projectstatus
+                       customerid
+                       managerid
+                       custuserid
+                       salescontactid
+                       begindate
+                       enddate
+                       departmentid
+                       locationid
+                       classid
+                       currency
+                       billingtype
+                       termname
+                       docnumber
+                       billto
+                       shipto
+                       contactinfo
+                       sonumber
+                       ponumber
+                       poamount
+                       pqnumber
+                       budgetamount
+                       budgetedcost
+                       budgetqty
+                       userrestrictions
+                       obspercentcomplete
+                       budgetid
+                       billingrate
+                       billingpricing
+                       expenserate
+                       expensepricing
+                       poaprate
+                       poappricing
+                       status
+                       supdocid
+                       invoicemessage
+                       invoicecurrency
+                       projectresources
+                       billingovermax
+                       excludeexpenses
+                       customfields].freeze
       UPDATE_KEYS = CREATE_KEYS
 
       def create_xml(xml)
@@ -17,8 +64,8 @@ module Intacct
         xml.MANAGERID attributes.managerid if attributes.managerid.present?
         xml.CUSTUSERID attributes.custuserid if attributes.custuserid.present?
         xml.SALESCONTACTID attributes.salescontactid if attributes.salescontactid.present?
-        xml.BEGINDATE attributes.begindate.strftime("%m/%d/%Y") if attributes.begindate.present?
-        xml.ENDDATE attributes.enddate.strftime("%m/%d/%Y") if attributes.enddate.present?
+        xml.BEGINDATE attributes.begindate.strftime('%m/%d/%Y') if attributes.begindate.present?
+        xml.ENDDATE attributes.enddate.strftime('%m/%d/%Y') if attributes.enddate.present?
         xml.DEPARTMENTID attributes.departmentid if attributes.departmentid.present?
         xml.LOCATIONID attributes.locationid if attributes.locationid.present?
         xml.CLASSID attributes.classid if attributes.classid.present?
@@ -49,55 +96,51 @@ module Intacct
         xml.SUPDOCID attributes.supdocid if attributes.supdocid.present?
         xml.INVOICEMESSAGE attributes.invoicemessage if attributes.invoicemessage.present?
         xml.INVOICECURRENCY attributes.invoicecurrency if attributes.invoicecurrency.present?
-              if attributes.projectresources.present?
-                Array.wrap(attributes.projectresources).each do |attributes|
-                  xml.PROJECTRESOURCES do
-                if attributes.projectresource.present?
+        if attributes.projectresources.present?
+          Array.wrap(attributes.projectresources).each do |attributes|
+            xml.PROJECTRESOURCES do
+              if attributes.projectresource.present?
                 Array.wrap(attributes.projectresource).each do |attributes|
                   xml.PROJECTRESOURCE do
-          xml.EMPLOYEEID attributes.employeeid
-xml.ITEMID attributes.itemid if attributes.itemid.present?
-xml.RESOURCEDESCRIPTION attributes.resourcedescription if attributes.resourcedescription.present?
-xml.STARTDATE attributes.startdate.strftime("%m/%d/%Y") if attributes.startdate.present?
-xml.BILLINGRATE attributes.billingrate if attributes.billingrate.present?
-xml.EXPENSERATE attributes.expenserate if attributes.expenserate.present?
-xml.POAPRATE attributes.poaprate if attributes.poaprate.present?
-        end
+                    xml.EMPLOYEEID attributes.employeeid
+                    xml.ITEMID attributes.itemid if attributes.itemid.present?
+                    xml.RESOURCEDESCRIPTION attributes.resourcedescription if attributes.resourcedescription.present?
+                    xml.STARTDATE attributes.startdate.strftime('%m/%d/%Y') if attributes.startdate.present?
+                    xml.BILLINGRATE attributes.billingrate if attributes.billingrate.present?
+                    xml.EXPENSERATE attributes.expenserate if attributes.expenserate.present?
+                    xml.POAPRATE attributes.poaprate if attributes.poaprate.present?
+                  end
+                end
+
+              end
+            end
+          end
 
         end
-
-      end
-
-        end
-
-        end
-
-      end
 
         xml.BILLINGOVERMAX attributes.billingovermax if attributes.billingovermax.present?
         xml.EXCLUDEEXPENSES attributes.excludeexpenses if attributes.excludeexpenses.present?
-              if attributes.customfields.present? || attributes.to_h.except(*CREATE_KEYS).present?
-        xml.customfields do
-          if attributes.customfields.present?
-            attributes.customfields.presence&.each do |custom_field|
-              xml.customfield do
-                xml.customfieldname custom_field[:customfieldname]
-                xml.customfieldvalue custom_field[:customfieldvalue]
+        if attributes.customfields.present? || attributes.to_h.except(*CREATE_KEYS).present?
+          xml.customfields do
+            if attributes.customfields.present?
+              attributes.customfields.presence&.each do |custom_field|
+                xml.customfield do
+                  xml.customfieldname custom_field[:customfieldname]
+                  xml.customfieldvalue custom_field[:customfieldvalue]
+                end
               end
             end
-          end
 
-          if attributes.to_h.except(*CREATE_KEYS).present?
-            attributes.to_h.except(*CREATE_KEYS).each do |name, value|
-              xml.customfield do
-                xml.customfieldname name
-                xml.customfieldvalue value
+            if attributes.to_h.except(*CREATE_KEYS).present?
+              attributes.to_h.except(*CREATE_KEYS).each do |name, value|
+                xml.customfield do
+                  xml.customfieldname name
+                  xml.customfieldvalue value
+                end
               end
             end
           end
         end
-      end
-
       end
 
       def update_xml(xml)

@@ -11,9 +11,7 @@ module Intacct
         # Need to create the customer if one doesn't exist
         intacct_customer = Intacct::Customer.new attributes.customer
         unless attributes.customer.intacct_system_id.present?
-          unless intacct_customer.create
-            raise 'Could not create customer'
-          end
+          raise 'Could not create customer' unless intacct_customer.create
         end
 
         if intacct_customer.get
@@ -24,7 +22,7 @@ module Intacct
         end
 
         # Create vendor if we have one and not in Intacct
-        if attributes.vendor and attributes.vendor.intacct_system_id.blank?
+        if attributes.vendor && attributes.vendor.intacct_system_id.blank?
           intacct_vendor = Intacct::Vendor.new attributes.vendor
           if intacct_vendor.create
             attributes.vendor = intacct_vendor.attributes
@@ -34,11 +32,11 @@ module Intacct
         end
 
         send_xml('create') do |xml|
-          xml.function(controlid: "f1") {
-            xml.create_invoice {
+          xml.function(controlid: 'f1') do
+            xml.create_invoice do
               invoice_xml xml
-            }
-          }
+            end
+          end
         end
 
         successful?
@@ -48,9 +46,9 @@ module Intacct
         return false unless attributes.invoice.intacct_system_id.present?
 
         send_xml('delete') do |xml|
-          xml.function(controlid: "1") {
-            xml.delete_invoice(externalkey: "false", key: attributes.invoice.intacct_key)
-          }
+          xml.function(controlid: '1') do
+            xml.delete_invoice(externalkey: 'false', key: attributes.invoice.intacct_key)
+          end
         end
 
         successful?
@@ -61,15 +59,15 @@ module Intacct
       end
 
       def invoice_xml(xml)
-        xml.customerid "#{attributes.customer.intacct_system_id}"
-        xml.datecreated {
-          xml.year attributes.invoice.created_at.strftime("%Y")
-          xml.month attributes.invoice.created_at.strftime("%m")
-          xml.day attributes.invoice.created_at.strftime("%d")
-        }
+        xml.customerid attributes.customer.intacct_system_id.to_s
+        xml.datecreated do
+          xml.year attributes.invoice.created_at.strftime('%Y')
+          xml.month attributes.invoice.created_at.strftime('%m')
+          xml.day attributes.invoice.created_at.strftime('%d')
+        end
 
         termname = customer_data.termname
-        xml.termname termname.present? ? termname : "Net 30"
+        xml.termname termname.present? ? termname : 'Net 30'
 
         xml.invoiceno intacct_object_id
         run_hook :custom_invoice_fields, xml
@@ -92,10 +90,8 @@ module Intacct
       end
 
       def set_date_time(type)
-        if %w(create update delete).include? type
-          if attributes.invoice.respond_to? :"intacct_#{type}d_at"
-            attributes.invoice.send("intacct_#{type}d_at=", DateTime.now)
-          end
+        if %w[create update delete].include? type
+          attributes.invoice.send("intacct_#{type}d_at=", DateTime.now) if attributes.invoice.respond_to? :"intacct_#{type}d_at"
         end
       end
     end

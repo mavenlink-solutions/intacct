@@ -1,14 +1,13 @@
 module Intacct
   module Actions
     class Inspect < Base
-
       def request(options)
         detail = options[:detail] ? '1' : '0'
 
         Intacct::XmlRequest.build_xml(client, action) do |xml|
-          xml.function(controlid: '1') {
+          xml.function(controlid: '1') do
             xml << "<inspect detail=#{detail}><object>#{klass.api_name.upcase}</object></inspect>"
-          }
+          end
         end
       end
 

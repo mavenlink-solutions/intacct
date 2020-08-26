@@ -1,11 +1,15 @@
 require 'spec_helper'
 
 describe Intacct::Base do
+  module Intacct
+    module Models
+      class Example < Intacct::Base
+      end
+    end
+  end
 
-  class Intacct::Models::Example < Intacct::Base; end;
-
-  let(:client)  { double("client") }
-  let(:attrs)   { Hash.new }
+  let(:client)  { double('client') }
+  let(:attrs)   { {} }
 
   subject { Intacct::Models::Example.new(client, attrs) }
 

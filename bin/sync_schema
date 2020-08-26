@@ -2,21 +2,24 @@
 
 MODELS_TO_GENERATE = %w[project task].freeze
 
-ENV["BUNDLER_VERSION"] ||= "1.17.3"
-ENV["BUNDLE_GEMFILE"] ||= File.expand_path("../Gemfile", __dir__)
+ENV['BUNDLER_VERSION'] ||= '1.17.3'
+ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../Gemfile', __dir__)
 
-require "bundler/setup"
+require 'bundler/setup'
 
-require "active_support"
+require 'active_support'
 require 'active_support/core_ext/object'
-require "net/http"
-require "erb"
-require "nokogiri"
-require "pry-byebug"
+require 'net/http'
+require 'erb'
+require 'nokogiri'
+require 'pry-byebug'
+require 'rubocop'
 
-@template = File.read(File.expand_path("../templates/template.rb.erb", __dir__))
+MODEL_DIR = File.expand_path('../lib/intacct/models', __dir__).freeze
 
-raw_document = Net::HTTP.get(URI("https://raw.githubusercontent.com/Intacct/intacct_dtd/master/v3.0/api.xsd"))
+@template = File.read(File.expand_path('../templates/template.rb.erb', __dir__))
+
+raw_document = Net::HTTP.get(URI('https://raw.githubusercontent.com/Intacct/intacct_dtd/master/v3.0/api.xsd'))
 parsed = Nokogiri.XML(raw_document)
 
 def element?(val)
@@ -27,15 +30,15 @@ def filtered_children(element)
   element.children.select { |child| element?(child) }
 end
 
-def element_required?(el)
-  min = el.attributes.values.detect { |attr| attr.name == "minOccurs" }
+def element_required?(element)
+  min = element.attributes.values.detect { |attr| attr.name == 'minOccurs' }
   return true if min.nil?
 
-  min.value.to_i > 0
+  min.value.to_i.positive?
 end
 
-def element_name(el)
-  el.attributes.values.detect { |attr| attr.name == "ref" || attr.name == "name" }&.value
+def element_name(element)
+  element.attributes.values.detect { |attr| attr.name == 'ref' || attr.name == 'name' }&.value
 end
 
 class RegisteredTypes
@@ -56,16 +59,16 @@ class XmlType
   end
 
   def self.type_name(element)
-    element.attributes.values.detect { |attr| attr.name == "name" }&.value
+    element.attributes.values.detect { |attr| attr.name == 'name' }&.value
   end
 
   def self.ref(element)
-    element.attributes.values.detect { |attr| attr.name == "ref" }&.value
+    element.attributes.values.detect { |attr| attr.name == 'ref' }&.value
   end
 
   def self.array?(element)
-    val = element.attributes.values.detect { |attr| attr.name == "maxOccurs" }&.value
-    val == "unbounded" || val.to_i > 1
+    val = element.attributes.values.detect { |attr| attr.name == 'maxOccurs' }&.value
+    val == 'unbounded' || val.to_i > 1
   end
 
   def initialize(element)
@@ -116,7 +119,7 @@ class XmlType
     end
   end
 
-  def to_ruby(action = "create", required: required?)
+  def to_ruby(action = 'create', required: required?)
     case data_type
     when :custom_fields
       custom_field_ruby(action)
@@ -176,7 +179,7 @@ class XmlType
   end
 
   def custom_fields?
-    name == "customfields"
+    name == 'customfields'
   end
 
   def append_presence_check(line, required = required?)
@@ -206,12 +209,14 @@ class XmlType
   end
 
   def build_sequence(element)
-    complex = filtered_children(element).detect { |child| child.name == "complexType" }
+    complex = filtered_children(element).detect { |child| child.name == 'complexType' }
     return unless complex.present?
 
-    return if complex.attributes.values.any? { |child| child.name == "mixed" && child.value == "true" }
+    return if complex.attributes.values.any? do |child|
+                child.name == 'mixed' && child.value == 'true'
+              end
 
-    sequence = filtered_children(complex).detect { |child| child.name == "sequence" }
+    sequence = filtered_children(complex).detect { |child| child.name == 'sequence' }
     return if sequence.blank?
 
     @sequence = filtered_children(sequence).map { |child| XmlType.new(child) }
@@ -233,11 +238,12 @@ def process_template(object)
   @create_names = @create_attributes.map { |attr| attr.name.to_sym }
   @update_names = @update_attributes.map { |attr| attr.name.to_sym }
 
-  if @identical = @create_names == @update_names
-    @update_names = "CREATE_KEYS"
-  end
+  @update_names = 'CREATE_KEYS' if (@identical = (@create_names == @update_names))
 
-  File.write(File.expand_path("../lib/intacct/models/#{object}.rb", __dir__), ERB.new(@template, trim_mode: "-").result)
+  File.write(File.join(MODEL_DIR, "#{object}.rb"),
+             ERB.new(@template, trim_mode: '-').result)
 end
 
 MODELS_TO_GENERATE.each { |object| process_template(object) }
+
+RuboCop::CLI.new.run(['-a', MODEL_DIR])

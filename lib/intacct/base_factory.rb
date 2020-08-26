@@ -26,7 +26,7 @@ module Intacct
                              :update_all, :inspect_object, :delete
 
     # This method needs special handling as it has a default argument value
-    def build(attrs={})
+    def build(attrs = {})
       target_class.build(@client, attrs)
     end
   end

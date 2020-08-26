@@ -1,4 +1,4 @@
-$: << File.expand_path(File.dirname(__FILE__))
+$LOAD_PATH << __dir__
 
 require 'intacct/version'
 require 'net/http'
@@ -43,7 +43,6 @@ require 'intacct/models/timesheet'
 require 'intacct/models/timesheet_entry'
 require 'intacct/models/vendor'
 
-
 class Object
   def blank?
     respond_to?(:empty?) ? empty? : !self
@@ -55,13 +54,13 @@ class Object
 end
 
 module Intacct
-  extend self
+  module_function
 
-  attr_accessor :xml_sender_id  , :xml_password    ,
-                :user_id        , :company_id      , :password ,
-                :invoice_prefix , :bill_prefix     ,
-                :vendor_prefix  , :customer_prefix ,
-                :project_prefix , :task_prefix
+  attr_accessor :xml_sender_id, :xml_password,
+                :user_id, :company_id, :password,
+                :invoice_prefix, :bill_prefix,
+                :vendor_prefix, :customer_prefix,
+                :project_prefix, :task_prefix
 
   def configure
     yield self
