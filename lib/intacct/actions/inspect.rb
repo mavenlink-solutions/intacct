@@ -1,29 +1,28 @@
 module Intacct
   module Actions
     class Inspect < Base
-
       def request(options)
-        detail = options[:detail] ? '1' : '0'
+        detail = options[:detail] ? "1" : "0"
 
         Intacct::XmlRequest.build_xml(client, action) do |xml|
-          xml.function(controlid: '1') {
+          xml.function(controlid: "1") do
             xml << "<inspect detail=#{detail}><object>#{klass.api_name.upcase}</object></inspect>"
-          }
+          end
         end
       end
 
       def response_body
-        raw =  @response.at('//result/data/Type/Fields')
+        raw =  @response.at("//result/data/Type/Fields")
         return unless raw
 
-        Hash.from_xml(raw.to_xml)['Fields']['Field']
+        Hash.from_xml(raw.to_xml)["Fields"]["Field"]
       end
 
       def list_type
-        raw =  @response.at('//result/data/Type')
+        raw =  @response.at("//result/data/Type")
         return unless raw
 
-        Hash.from_xml(raw.to_xml)['Type']['Name'].try(:downcase)
+        Hash.from_xml(raw.to_xml)["Type"]["Name"].try(:downcase)
       end
 
       module Helper
@@ -31,7 +30,7 @@ module Intacct
 
         module ClassMethods
           def inspect_object(client, options = {})
-            response = Intacct::Actions::Inspect.new(client, self, 'inspect', options).perform
+            response = Intacct::Actions::Inspect.new(client, self, "inspect", options).perform
 
             response.body
           end

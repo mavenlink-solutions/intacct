@@ -1,18 +1,17 @@
 module Intacct
   module Actions
     class ReadByQuery < Base
-
       def request(options)
         Intacct::XmlRequest.build_xml(client, action) do |xml|
-          xml.function(controlid: 'f4') {
-            xml.readByQuery {
+          xml.function(controlid: "f4") do
+            xml.readByQuery do
               xml.object       klass.api_name.upcase
-              xml.query        options.fetch(:query, '')
+              xml.query        options.fetch(:query, "")
               xml.pagesize     options.fetch(:page_size, 1000)
-              xml.fields       options.fetch(:fields, '*')
-              xml.returnFormat options.fetch(:return_format, 'xml')
-            }
-          }
+              xml.fields       options.fetch(:fields, "*")
+              xml.returnFormat options.fetch(:return_format, "xml")
+            end
+          end
         end
       end
 
@@ -21,17 +20,17 @@ module Intacct
         return unless raw
 
         {
-          list_type:     raw.attributes['listtype'].content,
-          data:          Intacct::Utils.instance.downcase_keys(Hash.from_xml(raw.to_xml)['data'][list_type]),
-          count:         raw.attributes['count'].content.to_i,
-          total_count:   raw.attributes['totalcount'].content.to_i,
-          num_remaining: raw.attributes['numremaining'].content.to_i,
-          result_id:     raw.attributes['resultId'].content
+          list_type: raw.attributes["listtype"].content,
+          data: Intacct::Utils.instance.downcase_keys(Hash.from_xml(raw.to_xml)["data"][list_type]),
+          count: raw.attributes["count"].content.to_i,
+          total_count: raw.attributes["totalcount"].content.to_i,
+          num_remaining: raw.attributes["numremaining"].content.to_i,
+          result_id: raw.attributes["resultId"].content
         }
       end
 
       def list_type
-        @response.at("//result/data").attributes['listtype'].content
+        @response.at("//result/data").attributes["listtype"].content
       end
 
       module Helper
@@ -39,17 +38,15 @@ module Intacct
 
         module ClassMethods
           def read_by_query(client, options = {})
-            response = Intacct::Actions::ReadByQuery.new(client, self, 'read_by_query', options).perform
+            response = Intacct::Actions::ReadByQuery.new(client, self, "read_by_query",
+                                                         options).perform
 
-            if response.success?
-              Intacct::QueryResult.new(client, response, self)
-            else
-              raise Intacct::Error, formatted_error_message(response.errors)
-            end
+            raise Intacct::Error, formatted_error_message(response.errors) unless response.success?
+
+            Intacct::QueryResult.new(client, response, self)
           end
         end
       end
-
     end
   end
 end

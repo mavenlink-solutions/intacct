@@ -1,20 +1,17 @@
 module Intacct
   module Actions
     class ReadMore < Base
-
       def request(options)
         Intacct::XmlRequest.build_xml(client, action) do |xml|
-          xml.function(controlid: 'f4') {
-            xml.readMore {
-
+          xml.function(controlid: "f4") do
+            xml.readMore do
               if options[:result_id]
                 xml.resultId options[:result_id]
               else
                 xml.object klass.api_name
               end
-
-            }
-          }
+            end
+          end
         end
       end
 
@@ -23,17 +20,17 @@ module Intacct
         return unless raw
 
         {
-          list_type:     raw.attributes['listtype'].content,
-          data:          Intacct::Utils.instance.downcase_keys(Hash.from_xml(raw.to_xml)['data'][list_type]),
-          count:         raw.attributes['count'].content.to_i,
-          total_count:   raw.attributes['totalcount'].content.to_i,
-          num_remaining: raw.attributes['numremaining'].content.to_i,
-          result_id:     raw.attributes['resultId'].content
+          list_type: raw.attributes["listtype"].content,
+          data: Intacct::Utils.instance.downcase_keys(Hash.from_xml(raw.to_xml)["data"][list_type]),
+          count: raw.attributes["count"].content.to_i,
+          total_count: raw.attributes["totalcount"].content.to_i,
+          num_remaining: raw.attributes["numremaining"].content.to_i,
+          result_id: raw.attributes["resultId"].content
         }
       end
 
       def list_type
-        @response.at("//result/data").attributes['listtype'].content
+        @response.at("//result/data").attributes["listtype"].content
       end
 
       module Helper
@@ -41,11 +38,9 @@ module Intacct
 
         module ClassMethods
           def read_more(client, options)
-            response = Intacct::Actions::ReadMore.new(client, self, 'read_more', options).perform
+            response = Intacct::Actions::ReadMore.new(client, self, "read_more", options).perform
 
-            if response.success?
-              response
-            end
+            response if response.success?
           end
         end
       end

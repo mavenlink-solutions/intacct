@@ -1,28 +1,21 @@
 module Intacct
   module Actions
     class UpdateAll < Base
-
-      def request(options)
+      def request(_options)
         Intacct::XmlRequest.build_xml(client, action) do |xml|
-          xml.function(controlid: '1') {
-            xml.update {
-              #TODO: Finish this
-            }
-          }
+          xml.function(controlid: "1") do
+            xml.update do
+              # TODO: Finish this
+            end
+          end
         end
       end
 
-      def response_body
+      def response_body; end
 
-      end
+      def list_type; end
 
-      def list_type
-
-      end
-
-      def response_errors
-
-      end
+      def response_errors; end
 
       module Helper
         include ActiveSupport::Concern
@@ -30,10 +23,10 @@ module Intacct
         module ClassMethods
           def update_all(client, ids, attributes)
             params = {
-                ids:        ids,
-                attributes: attributes
+              ids: ids,
+              attributes: attributes
             }
-            response = Intacct::Actions::UpdateAll.new(client, self, 'update_all', params).perform
+            response = Intacct::Actions::UpdateAll.new(client, self, "update_all", params).perform
 
             @errors = response.errors
 
@@ -41,7 +34,6 @@ module Intacct
           end
         end
       end
-
     end
   end
 end

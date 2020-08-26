@@ -1,12 +1,16 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe Intacct::BaseFactory do
+  module Intacct
+    module Models
+      class Foo
+      end
+    end
+  end
 
-  class Intacct::Models::Foo ; end
-
-  let(:client) { double() }
-  let(:klass)  { 'Foo' }
-  subject      { Intacct::BaseFactory.new(client, klass)}
+  let(:client) { double }
+  let(:klass)  { "Foo" }
+  subject      { Intacct::BaseFactory.new(client, klass) }
 
   it "initializes correctly" do
     expect(subject.client).to       eq(client)
@@ -14,13 +18,13 @@ describe Intacct::BaseFactory do
   end
 
   it "proxies get to the target class" do
-    expect(Intacct::Models::Foo).to receive(:get).with(client, '1')
-    subject.get('1')
+    expect(Intacct::Models::Foo).to receive(:get).with(client, "1")
+    subject.get("1")
   end
 
   it "proxies read_by_query to the target class" do
-    expect(Intacct::Models::Foo).to receive(:read_by_query).with(client, query: 'FOO')
-    subject.read_by_query(query: 'FOO')
+    expect(Intacct::Models::Foo).to receive(:read_by_query).with(client, query: "FOO")
+    subject.read_by_query(query: "FOO")
   end
 
   it "returns the target class" do
@@ -28,7 +32,7 @@ describe Intacct::BaseFactory do
   end
 
   it "proxies build to the target class" do
-    attrs = double()
+    attrs = double
     expect(Intacct::Models::Foo).to receive(:build).with(client, attrs)
     subject.build(attrs)
   end

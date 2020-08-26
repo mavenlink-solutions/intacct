@@ -1,7 +1,6 @@
 module Intacct
   module Models
     class ObservedPercentCompleted < Intacct::Base
-
       api_name "OBSPCTCOMPLETED"
 
       def create_xml(xml)

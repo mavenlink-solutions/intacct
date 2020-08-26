@@ -1,26 +1,26 @@
 module Intacct
   module Actions
     class Create < Base
-      NEW_API_CLASSES = ['Intacct::Models::Expense', 'Intacct::Models::SalesDocument']
+      NEW_API_CLASSES = ["Intacct::Models::Expense", "Intacct::Models::SalesDocument"].freeze
 
-      def request(options)
+      def request(_options)
         if NEW_API_CLASSES.include?(klass.class.to_s)
           Intacct::XmlRequest.build_xml(client, action) do |xml|
-            xml.function(controlid: "1") {
-              xml.send(klass.create_name) {
+            xml.function(controlid: "1") do
+              xml.send(klass.create_name) do
                 klass.create_xml(xml)
-              }
-            }
+              end
+            end
           end
         else
           Intacct::XmlRequest.build_xml(client, action) do |xml|
-            xml.function(controlid: "1") {
-              xml.create {
-                xml.send(klass.api_name) {
+            xml.function(controlid: "1") do
+              xml.create do
+                xml.send(klass.api_name) do
                   klass.create_xml(xml)
-                }
-              }
-            }
+                end
+              end
+            end
           end
         end
       end
@@ -38,17 +38,16 @@ module Intacct
 
       module Helper
         def create(options = {})
-          response = Intacct::Actions::Create.new(client, self, 'create', options).perform
+          response = Intacct::Actions::Create.new(client, self, "create", options).perform
 
           @errors = response.errors
 
           if response.success?
-            self.attributes.recordno  = response.body['recordno'] unless response.body.nil?
+            attributes.recordno = response.body["recordno"] unless response.body.nil?
             true
           else
             false
           end
-
         end
       end
     end

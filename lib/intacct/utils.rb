@@ -1,4 +1,4 @@
-require 'singleton'
+require "singleton"
 
 module Intacct
   class Utils
@@ -6,12 +6,12 @@ module Intacct
 
     def downcase_keys(value)
       case value
-        when Array
-          value.map { |v| downcase_keys(v) }
-        when Hash
-          Hash[value.map { |k, v| [k.downcase, downcase_keys(v)] }]
-        else
-          value
+      when Array
+        value.map { |v| downcase_keys(v) }
+      when Hash
+        Hash[value.map { |k, v| [k.downcase, downcase_keys(v)] }]
+      else
+        value
       end
     end
   end

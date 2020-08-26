@@ -1,6 +1,6 @@
 module Intacct
   class QueryResult
-    attr_reader   :total_count
+    attr_reader :total_count
 
     delegate :each, :map, :count, :any?, :first, to: :results
 
@@ -17,19 +17,16 @@ module Intacct
 
     def results(options = { all: true })
       records = if options[:all]
-                  data = [ @results ]
+                  data = [@results]
 
-                  until num_remaining.zero?
-                    data << next_batch
-                  end
+                  data << next_batch until num_remaining.zero?
 
                   data.flatten
                 else
                   @results
                 end
 
-      records.map { |r| klass.new(client, r)}
-
+      records.map { |r| klass.new(client, r) }
     end
 
     private

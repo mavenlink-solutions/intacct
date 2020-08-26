@@ -5,16 +5,16 @@ module Intacct
     def initialize(options = {})
       @credentials = {
         xml_sender_id: options.fetch(:xml_sender_id, Intacct.xml_sender_id),
-        xml_password:  options.fetch(:xml_password, Intacct.xml_password),
-        user_id:       options.fetch(:user_id, Intacct.user_id),
-        password:      options.fetch(:password, Intacct.password),
-        company_id:    options.fetch(:company_id, Intacct.company_id)
+        xml_password: options.fetch(:xml_password, Intacct.xml_password),
+        user_id: options.fetch(:user_id, Intacct.user_id),
+        password: options.fetch(:password, Intacct.password),
+        company_id: options.fetch(:company_id, Intacct.company_id)
       }
 
-      raise ArgumentError, 'Missing credential value.' if credentials.values.any?(&:nil?)
+      raise ArgumentError, "Missing credential value." if credentials.values.any?(&:nil?)
     end
 
-    def method_missing(method_name, *args, &block)
+    def method_missing(method_name, *_args)
       if method_name.to_s.in? models
         Intacct::BaseFactory.new(self, method_name)
       else
@@ -31,10 +31,30 @@ module Intacct
     end
 
     def models
-      %w(bills customers invoices items projects vendors timesheets employees expenses tasks departments
-         locations project_types project_statuses class_dimensions timesheet_entries project_resources
-         task_resources sales_documents expense_types so_transaction_definitions gl_details ap_bill_items
-         observed_percent_completeds)
+      %w[bills
+         customers
+         invoices
+         items
+         projects
+         vendors
+         timesheets
+         employees
+         expenses
+         tasks
+         departments
+         locations
+         project_types
+         project_statuses
+         class_dimensions
+         timesheet_entries
+         project_resources
+         task_resources
+         sales_documents
+         expense_types
+         so_transaction_definitions
+         gl_details
+         ap_bill_items
+         observed_percent_completeds]
     end
   end
 end
