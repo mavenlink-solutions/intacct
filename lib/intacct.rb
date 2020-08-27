@@ -54,7 +54,7 @@ class Object
 end
 
 module Intacct
-  module_function
+  extend self
 
   attr_accessor :xml_sender_id, :xml_password,
                 :user_id, :company_id, :password,

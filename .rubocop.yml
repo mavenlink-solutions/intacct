@@ -27,5 +27,8 @@ Style/GuardClause:
   Exclude:
     - 'lib/intacct/models/**/*'
 
+Style/ModuleFunction:
+  Enabled: false
+
 Style/StringLiterals:
   EnforcedStyle: double_quotes
