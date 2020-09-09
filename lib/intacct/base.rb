@@ -16,6 +16,10 @@ module Intacct
       super(client, *args)
     end
 
+    def create_name
+      "create_#{self.class.name.demodulize.underscore}"
+    end
+
     def create_xml(_xml)
       raise NotImplementedError, "This model does not support create."
     end

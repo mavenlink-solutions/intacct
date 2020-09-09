@@ -7,21 +7,21 @@ module Intacct
       <%- if @create_attributes.present? -%>
       def create_xml(xml)
         <%- @create_attributes.each do |attr| -%>
-        <%= attr.to_ruby("create") %>
+          <%= attr.to_ruby("create", legacy_endpoint: @create_legacy_endpoint) %>
         <%- end -%>
       end
       <%- end -%>
 
       <%- if @update_attributes.present? -%>
-      def update_xml(xml)
-        <%- if @identical -%>
-        create_xml(xml)
-        <%- else -%>
-        <%- @update_attributes.each do |attr| -%>
-        <%= attr.to_ruby("update") %>
-        <%- end -%>
-        <%- end -%>
-      end
+        def update_xml(xml)
+          <%- if @identical -%>
+            create_xml(xml)
+          <%- else -%>
+            <%- @update_attributes.each do |attr| -%>
+              <%= attr.to_ruby("update", legacy_endpoint: @update_legacy_endpoint) %>
+            <%- end -%>
+          <%- end -%>
+        end
       <%- end -%>
     end
   end

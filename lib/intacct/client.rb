@@ -52,6 +52,7 @@ module Intacct
          sales_documents
          expense_types
          so_transaction_definitions
+         sotransactions
          gl_details
          ap_bill_items
          observed_percent_completeds]

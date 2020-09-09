@@ -100,7 +100,7 @@ module Intacct
           Array.wrap(attributes.projectresources).each do |attributes|
             xml.PROJECTRESOURCES do
               if attributes.projectresource.present?
-                Array.wrap(attributes.projectresource).each do |attributes|
+                Array.wrap(attributes.projectresources).each do |attributes|
                   xml.PROJECTRESOURCE do
                     xml.EMPLOYEEID attributes.employeeid
                     xml.ITEMID attributes.itemid if attributes.itemid.present?
