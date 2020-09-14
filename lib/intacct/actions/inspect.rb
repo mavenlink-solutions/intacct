@@ -5,21 +5,21 @@ module Intacct
 
       def request(options)
         Intacct::XmlRequest.build_xml(client, action) do |xml|
-          if klass.to_s.in?(LOOKUP_OBJECT)
-            docparid = options.try(:[], :docparid).presence
-            docparid = "<docparid>#{docparid}</docparid>" if docparid.present?
+          xml.function(controlid: "1") do
+            if klass.to_s.in?(LOOKUP_OBJECT)
+              docparid = options.try(:[], :docparid).presence
+              docparid = "<docparid>#{docparid}</docparid>" if docparid.present?
 
-            xml.function(controlid: "1") do
               xml << <<-XML
                 <lookup>
                   <object>#{klass.api_name.upcase}</object>
                   #{docparid}
                 </lookup>
               XML
+            else
+              detail = options[:detail] ? "1" : "0"
+              xml << "<inspect detail=#{detail}><object>#{klass.api_name.upcase}</object></inspect>"
             end
-          else
-            detail = options[:detail] ? "1" : "0"
-            xml << "<inspect detail=#{detail}><object>#{klass.api_name.upcase}</object></inspect>"
           end
         end
       end
