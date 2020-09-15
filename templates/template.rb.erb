@@ -1,13 +1,14 @@
 module Intacct
   module Models
     class <%= @class_name %> < Intacct::Base
-      CREATE_KEYS = <%= @create_names %>.freeze
-      UPDATE_KEYS = <%= @update_names %><% unless @identical %>.freeze<% end %>
+      <% @attribute_keys.each do |name, values| %>
+        <%= name %> = <%= values %>
+    <% end %>
 
       <%- if @create_attributes.present? -%>
       def create_xml(xml)
-        <%- @create_attributes.each do |attr| -%>
-          <%= attr.to_ruby("create", legacy_endpoint: @create_legacy_endpoint) %>
+        <%- @create_attributes.sequence.each do |attr| -%>
+          <%= attr.to_ruby(model: @create_attributes.name, legacy_endpoint: @create_legacy_endpoint) %>
         <%- end -%>
       end
       <%- end -%>
@@ -17,8 +18,8 @@ module Intacct
           <%- if @identical -%>
             create_xml(xml)
           <%- else -%>
-            <%- @update_attributes.each do |attr| -%>
-              <%= attr.to_ruby("update", legacy_endpoint: @update_legacy_endpoint) %>
+            <%- @update_attributes.sequence.each do |attr| -%>
+              <%= attr.to_ruby(model: @update_attributes.name, legacy_endpoint: @update_legacy_endpoint) %>
             <%- end -%>
           <%- end -%>
         end

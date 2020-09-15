@@ -18,31 +18,10 @@ Gemspec/RequiredRubyVersion:
 Metrics/AbcSize:
   Max: 513
 
-# Offense count: 23
-# Configuration parameters: CountComments, CountAsOne, ExcludedMethods.
-# ExcludedMethods: refine
-Metrics/BlockLength:
-  Max: 133
-
-# Offense count: 5
-# Configuration parameters: CountComments, CountAsOne.
-Metrics/ClassLength:
-  Max: 341
-
 # Offense count: 8
 # Configuration parameters: IgnoredMethods.
 Metrics/CyclomaticComplexity:
   Max: 93
-
-# Offense count: 35
-# Configuration parameters: CountComments, CountAsOne, ExcludedMethods.
-Metrics/MethodLength:
-  Max: 205
-
-# Offense count: 4
-# Configuration parameters: CountComments, CountAsOne.
-Metrics/ModuleLength:
-  Max: 171
 
 # Offense count: 8
 # Configuration parameters: IgnoredMethods.

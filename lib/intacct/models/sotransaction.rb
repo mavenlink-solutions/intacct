@@ -1,56 +1,107 @@
 module Intacct
   module Models
     class Sotransaction < Intacct::Base
-      CREATE_KEYS = %i[transactiontype
-                       datecreated
-                       dateposted
-                       createdfrom
-                       customerid
-                       documentno
-                       origdocdate
-                       referenceno
-                       termname
-                       datedue
-                       message
-                       shippingmethod
-                       shipto
-                       billto
-                       supdocid
-                       externalid
-                       basecurr
-                       currency
-                       exchratedate
-                       exchratetype
-                       exchrate
-                       vsoepricelist
-                       customfields
-                       state
-                       projectid
-                       sotransitems
-                       subtotals].freeze
-      UPDATE_KEYS = %i[datecreated
-                       dateposted
-                       referenceno
-                       termname
-                       datedue
-                       origdocdate
-                       message
-                       shippingmethod
-                       shipto
-                       billto
-                       supdocid
-                       externalid
-                       basecurr
-                       currency
-                       exchratedate
-                       exchratetype
-                       exchrate
-                       vsoepricelist
-                       customfields
-                       state
-                       projectid
-                       updatesotransitems
-                       updatesubtotals].freeze
+      CREATE_SOTRANSACTION_KEYS = %i[transactiontype
+                                     datecreated
+                                     dateposted
+                                     createdfrom
+                                     customerid
+                                     documentno
+                                     origdocdate
+                                     referenceno
+                                     termname
+                                     datedue
+                                     message
+                                     shippingmethod
+                                     shipto
+                                     billto
+                                     supdocid
+                                     externalid
+                                     basecurr
+                                     currency
+                                     exchratedate
+                                     exchratetype
+                                     exchrate
+                                     vsoepricelist
+                                     customfields
+                                     state
+                                     projectid
+                                     sotransitems
+                                     subtotals].freeze
+
+      UPDATE_SOTRANSACTION_KEYS = %i[datecreated
+                                     dateposted
+                                     referenceno
+                                     termname
+                                     datedue
+                                     origdocdate
+                                     message
+                                     shippingmethod
+                                     shipto
+                                     billto
+                                     supdocid
+                                     externalid
+                                     basecurr
+                                     currency
+                                     exchratedate
+                                     exchratetype
+                                     exchrate
+                                     vsoepricelist
+                                     customfields
+                                     state
+                                     projectid
+                                     updatesotransitems
+                                     updatesubtotals].freeze
+
+      SOTRANSITEM_KEYS = %i[bundlenumber
+                            itemid
+                            itemdesc
+                            taxable
+                            warehouseid
+                            quantity
+                            unit
+                            linelevelsimpletaxtype
+                            discountpercent
+                            price
+                            sourcelinekey
+                            discsurchargememo
+                            locationid
+                            departmentid
+                            memo
+                            itemdetails
+                            customfields
+                            revrectemplate
+                            revrecstartdate
+                            revrecenddate
+                            renewalmacro
+                            projectid
+                            customerid
+                            vendorid
+                            employeeid
+                            classid
+                            contractid
+                            fulfillmentstatus
+                            taskno
+                            billingtemplate
+                            dropship
+                            shipto].freeze
+
+      SUBTOTAL_KEYS = %i[description total absval percentval locationid departmentid projectid customerid vendorid employeeid classid itemid contractid customfields].freeze
+
+      UPDATESUBTOTAL_KEYS = %i[description
+                               total
+                               absval
+                               percentval
+                               locationid
+                               departmentid
+                               projectid
+                               customerid
+                               vendorid
+                               employeeid
+                               classid
+                               itemid
+                               contractid
+                               customfields].freeze
 
       def create_xml(xml)
         xml.transactiontype attributes.transactiontype
@@ -112,7 +163,7 @@ module Intacct
         xml.exchratetype attributes.exchratetype if attributes.exchratetype.present?
         xml.exchrate attributes.exchrate if attributes.exchrate.present?
         xml.vsoepricelist attributes.vsoepricelist if attributes.vsoepricelist.present?
-        if attributes.customfields.present? || attributes.to_h.except(*CREATE_KEYS).present?
+        if attributes.customfields.present? || attributes.to_h.except(*CREATE_SOTRANSACTION_KEYS).present?
           xml.customfields do
             if attributes.customfields.present?
               attributes.customfields.presence&.each do |custom_field|
@@ -123,8 +174,8 @@ module Intacct
               end
             end
 
-            if attributes.to_h.except(*CREATE_KEYS).present?
-              attributes.to_h.except(*CREATE_KEYS).each do |name, value|
+            if attributes.to_h.except(*CREATE_SOTRANSACTION_KEYS).present?
+              attributes.to_h.except(*CREATE_SOTRANSACTION_KEYS).each do |name, value|
                 xml.customfield do
                   xml.customfieldname name
                   xml.customfieldvalue value
@@ -180,7 +231,7 @@ module Intacct
 
                 end
 
-                if attributes.customfields.present? || attributes.to_h.except(*CREATE_KEYS).present?
+                if attributes.customfields.present? || attributes.to_h.except(*SOTRANSITEM_KEYS).present?
                   xml.customfields do
                     if attributes.customfields.present?
                       attributes.customfields.presence&.each do |custom_field|
@@ -191,8 +242,8 @@ module Intacct
                       end
                     end
 
-                    if attributes.to_h.except(*CREATE_KEYS).present?
-                      attributes.to_h.except(*CREATE_KEYS).each do |name, value|
+                    if attributes.to_h.except(*SOTRANSITEM_KEYS).present?
+                      attributes.to_h.except(*SOTRANSITEM_KEYS).each do |name, value|
                         xml.customfield do
                           xml.customfieldname name
                           xml.customfieldvalue value
@@ -256,7 +307,7 @@ module Intacct
                 xml.classid attributes.classid if attributes.classid.present?
                 xml.itemid attributes.itemid if attributes.itemid.present?
                 xml.contractid attributes.contractid if attributes.contractid.present?
-                if attributes.customfields.present? || attributes.to_h.except(*CREATE_KEYS).present?
+                if attributes.customfields.present? || attributes.to_h.except(*SUBTOTAL_KEYS).present?
                   xml.customfields do
                     if attributes.customfields.present?
                       attributes.customfields.presence&.each do |custom_field|
@@ -267,8 +318,8 @@ module Intacct
                       end
                     end
 
-                    if attributes.to_h.except(*CREATE_KEYS).present?
-                      attributes.to_h.except(*CREATE_KEYS).each do |name, value|
+                    if attributes.to_h.except(*SUBTOTAL_KEYS).present?
+                      attributes.to_h.except(*SUBTOTAL_KEYS).each do |name, value|
                         xml.customfield do
                           xml.customfieldname name
                           xml.customfieldvalue value
@@ -285,25 +336,65 @@ module Intacct
       end
 
       def update_xml(xml)
-        xml.DATECREATED attributes.datecreated.strftime("%m/%d/%Y") if attributes.datecreated.present?
-        xml.DATEPOSTED attributes.dateposted.strftime("%m/%d/%Y") if attributes.dateposted.present?
-        xml.REFERENCENO attributes.referenceno if attributes.referenceno.present?
-        xml.TERMNAME attributes.termname if attributes.termname.present?
-        xml.DATEDUE attributes.datedue.strftime("%m/%d/%Y") if attributes.datedue.present?
-        xml.ORIGDOCDATE attributes.origdocdate.strftime("%m/%d/%Y") if attributes.origdocdate.present?
-        xml.MESSAGE attributes.message if attributes.message.present?
-        xml.SHIPPINGMETHOD attributes.shippingmethod if attributes.shippingmethod.present?
-        xml.SHIPTO attributes.shipto if attributes.shipto.present?
-        xml.BILLTO attributes.billto if attributes.billto.present?
-        xml.SUPDOCID attributes.supdocid if attributes.supdocid.present?
-        xml.EXTERNALID attributes.externalid if attributes.externalid.present?
-        xml.BASECURR attributes.basecurr if attributes.basecurr.present?
-        xml.CURRENCY attributes.currency
-        xml.EXCHRATEDATE attributes.exchratedate.strftime("%m/%d/%Y") if attributes.exchratedate.present?
-        xml.EXCHRATETYPE attributes.exchratetype if attributes.exchratetype.present?
-        xml.EXCHRATE attributes.exchrate if attributes.exchrate.present?
-        xml.VSOEPRICELIST attributes.vsoepricelist if attributes.vsoepricelist.present?
-        if attributes.customfields.present? || attributes.to_h.except(*UPDATE_KEYS).present?
+        if attributes.datecreated.present?
+          xml.datecreated do
+            xml.year attributes.datecreated.year
+            xml.month attributes.datecreated.month
+            xml.day attributes.datecreated.day
+          end
+
+        end
+
+        if attributes.dateposted.present?
+          xml.dateposted do
+            xml.year attributes.dateposted.year
+            xml.month attributes.dateposted.month
+            xml.day attributes.dateposted.day
+          end
+
+        end
+
+        xml.referenceno attributes.referenceno if attributes.referenceno.present?
+        xml.termname attributes.termname if attributes.termname.present?
+        if attributes.datedue.present?
+          xml.datedue do
+            xml.year attributes.datedue.year
+            xml.month attributes.datedue.month
+            xml.day attributes.datedue.day
+          end
+
+        end
+
+        if attributes.origdocdate.present?
+          xml.origdocdate do
+            xml.year attributes.origdocdate.year
+            xml.month attributes.origdocdate.month
+            xml.day attributes.origdocdate.day
+          end
+
+        end
+
+        xml.message attributes.message if attributes.message.present?
+        xml.shippingmethod attributes.shippingmethod if attributes.shippingmethod.present?
+        xml.shipto attributes.shipto if attributes.shipto.present?
+        xml.billto attributes.billto if attributes.billto.present?
+        xml.supdocid attributes.supdocid if attributes.supdocid.present?
+        xml.externalid attributes.externalid if attributes.externalid.present?
+        xml.basecurr attributes.basecurr if attributes.basecurr.present?
+        xml.currency attributes.currency
+        if attributes.exchratedate.present?
+          xml.exchratedate do
+            xml.year attributes.exchratedate.year
+            xml.month attributes.exchratedate.month
+            xml.day attributes.exchratedate.day
+          end
+
+        end
+
+        xml.exchratetype attributes.exchratetype if attributes.exchratetype.present?
+        xml.exchrate attributes.exchrate if attributes.exchrate.present?
+        xml.vsoepricelist attributes.vsoepricelist if attributes.vsoepricelist.present?
+        if attributes.customfields.present? || attributes.to_h.except(*UPDATE_SOTRANSACTION_KEYS).present?
           xml.customfields do
             if attributes.customfields.present?
               attributes.customfields.presence&.each do |custom_field|
@@ -314,8 +405,8 @@ module Intacct
               end
             end
 
-            if attributes.to_h.except(*UPDATE_KEYS).present?
-              attributes.to_h.except(*UPDATE_KEYS).each do |name, value|
+            if attributes.to_h.except(*UPDATE_SOTRANSACTION_KEYS).present?
+              attributes.to_h.except(*UPDATE_SOTRANSACTION_KEYS).each do |name, value|
                 xml.customfield do
                   xml.customfieldname name
                   xml.customfieldvalue value
@@ -325,27 +416,27 @@ module Intacct
           end
         end
 
-        xml.STATE attributes.state if attributes.state.present?
-        xml.PROJECTID attributes.projectid if attributes.projectid.present?
-        xml.UPDATESOTRANSITEMS attributes.updatesotransitems if attributes.updatesotransitems.present?
+        xml.state attributes.state if attributes.state.present?
+        xml.projectid attributes.projectid if attributes.projectid.present?
+        xml.updatesotransitems attributes.updatesotransitems if attributes.updatesotransitems.present?
         if attributes.updatesubtotals.present?
-          xml.UPDATESUBTOTALS do
+          xml.updatesubtotals do
             Array.wrap(attributes.updatesubtotals).each do |attributes|
-              xml.UPDATESUBTOTAL do
-                xml.DESCRIPTION attributes.description
-                xml.TOTAL attributes.total
-                xml.ABSVAL attributes.absval if attributes.absval.present?
-                xml.PERCENTVAL attributes.percentval if attributes.percentval.present?
-                xml.LOCATIONID attributes.locationid if attributes.locationid.present?
-                xml.DEPARTMENTID attributes.departmentid if attributes.departmentid.present?
-                xml.PROJECTID attributes.projectid if attributes.projectid.present?
-                xml.CUSTOMERID attributes.customerid if attributes.customerid.present?
-                xml.VENDORID attributes.vendorid if attributes.vendorid.present?
-                xml.EMPLOYEEID attributes.employeeid if attributes.employeeid.present?
-                xml.CLASSID attributes.classid if attributes.classid.present?
-                xml.ITEMID attributes.itemid if attributes.itemid.present?
-                xml.CONTRACTID attributes.contractid if attributes.contractid.present?
-                if attributes.customfields.present? || attributes.to_h.except(*UPDATE_KEYS).present?
+              xml.updatesubtotal do
+                xml.description attributes.description
+                xml.total attributes.total
+                xml.absval attributes.absval if attributes.absval.present?
+                xml.percentval attributes.percentval if attributes.percentval.present?
+                xml.locationid attributes.locationid if attributes.locationid.present?
+                xml.departmentid attributes.departmentid if attributes.departmentid.present?
+                xml.projectid attributes.projectid if attributes.projectid.present?
+                xml.customerid attributes.customerid if attributes.customerid.present?
+                xml.vendorid attributes.vendorid if attributes.vendorid.present?
+                xml.employeeid attributes.employeeid if attributes.employeeid.present?
+                xml.classid attributes.classid if attributes.classid.present?
+                xml.itemid attributes.itemid if attributes.itemid.present?
+                xml.contractid attributes.contractid if attributes.contractid.present?
+                if attributes.customfields.present? || attributes.to_h.except(*UPDATESUBTOTAL_KEYS).present?
                   xml.customfields do
                     if attributes.customfields.present?
                       attributes.customfields.presence&.each do |custom_field|
@@ -356,8 +447,8 @@ module Intacct
                       end
                     end
 
-                    if attributes.to_h.except(*UPDATE_KEYS).present?
-                      attributes.to_h.except(*UPDATE_KEYS).each do |name, value|
+                    if attributes.to_h.except(*UPDATESUBTOTAL_KEYS).present?
+                      attributes.to_h.except(*UPDATESUBTOTAL_KEYS).each do |name, value|
                         xml.customfield do
                           xml.customfieldname name
                           xml.customfieldvalue value
