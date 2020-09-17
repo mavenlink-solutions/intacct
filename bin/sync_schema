@@ -106,11 +106,9 @@ class XmlType
   end
 
   def xml_name(legacy_endpoint)
-    if legacy_endpoint
-      name
-    else
-      name.upcase
-    end
+    return name if legacy_endpoint
+
+    name.upcase
   end
 
   def ref
