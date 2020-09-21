@@ -2,6 +2,8 @@ module Intacct
   Base = Struct.new(:client, :attributes) do
     include Intacct::Actions
 
+    DATE_FORMAT = "%m/%d/%Y".freeze
+
     attr_accessor :client, :sent_xml, :intacct_action, :api_name, :errors
 
     delegate :formatted_error_message, to: :class
@@ -52,6 +54,20 @@ module Intacct
 
     def persisted?
       !!attributes["recordno"]
+    end
+
+    protected
+
+    def format_date(date_object)
+      return if date_object.blank?
+
+      if date_object.is_a?(Date) || date_object.is_a?(Time)
+        date_object.strftime(DATE_FORMAT)
+      elsif date_object.is_a?(String)
+        Date.strptime(date_object, DATE_FORMAT).strftime(DATE_FORMAT)
+      else
+        date_object
+      end
     end
 
     private

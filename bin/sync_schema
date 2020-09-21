@@ -124,7 +124,7 @@ class XmlType
     when :custom_fields
       custom_field_ruby(action)
     when :date
-      append_presence_check("xml.#{xml_name} attributes.#{name}.strftime(\"%m/%d/%Y\")", required)
+      append_presence_check("xml.#{xml_name} format_date(attributes.#{name})", required)
     when :ref
       ref.to_ruby(action, required: required)
     when :array
