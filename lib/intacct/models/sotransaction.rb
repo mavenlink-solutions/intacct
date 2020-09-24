@@ -106,16 +106,16 @@ module Intacct
       def create_xml(xml)
         xml.transactiontype attributes.transactiontype
         xml.datecreated do
-          xml.year attributes.datecreated.year
-          xml.month attributes.datecreated.month
-          xml.day attributes.datecreated.day
+          xml.year parse_date(attributes.datecreated).year
+          xml.month parse_date(attributes.datecreated).month
+          xml.day parse_date(attributes.datecreated).day
         end
 
         if attributes.dateposted.present?
           xml.dateposted do
-            xml.year attributes.dateposted.year
-            xml.month attributes.dateposted.month
-            xml.day attributes.dateposted.day
+            xml.year parse_date(attributes.dateposted).year
+            xml.month parse_date(attributes.dateposted).month
+            xml.day parse_date(attributes.dateposted).day
           end
 
         end
@@ -125,9 +125,9 @@ module Intacct
         xml.documentno attributes.documentno if attributes.documentno.present?
         if attributes.origdocdate.present?
           xml.origdocdate do
-            xml.year attributes.origdocdate.year
-            xml.month attributes.origdocdate.month
-            xml.day attributes.origdocdate.day
+            xml.year parse_date(attributes.origdocdate).year
+            xml.month parse_date(attributes.origdocdate).month
+            xml.day parse_date(attributes.origdocdate).day
           end
 
         end
@@ -136,9 +136,9 @@ module Intacct
         xml.termname attributes.termname if attributes.termname.present?
         if attributes.datedue.present?
           xml.datedue do
-            xml.year attributes.datedue.year
-            xml.month attributes.datedue.month
-            xml.day attributes.datedue.day
+            xml.year parse_date(attributes.datedue).year
+            xml.month parse_date(attributes.datedue).month
+            xml.day parse_date(attributes.datedue).day
           end
 
         end
@@ -153,9 +153,9 @@ module Intacct
         xml.currency attributes.currency
         if attributes.exchratedate.present?
           xml.exchratedate do
-            xml.year attributes.exchratedate.year
-            xml.month attributes.exchratedate.month
-            xml.day attributes.exchratedate.day
+            xml.year parse_date(attributes.exchratedate).year
+            xml.month parse_date(attributes.exchratedate).month
+            xml.day parse_date(attributes.exchratedate).day
           end
 
         end
@@ -219,9 +219,9 @@ module Intacct
                         xml.bin attributes.bin if attributes.bin.present?
                         if attributes.itemexpiration.present?
                           xml.itemexpiration do
-                            xml.year attributes.itemexpiration.year
-                            xml.month attributes.itemexpiration.month
-                            xml.day attributes.itemexpiration.day
+                            xml.year parse_date(attributes.itemexpiration).year
+                            xml.month parse_date(attributes.itemexpiration).month
+                            xml.day parse_date(attributes.itemexpiration).day
                           end
 
                         end
@@ -256,18 +256,18 @@ module Intacct
                 xml.revrectemplate attributes.revrectemplate if attributes.revrectemplate.present?
                 if attributes.revrecstartdate.present?
                   xml.revrecstartdate do
-                    xml.year attributes.revrecstartdate.year
-                    xml.month attributes.revrecstartdate.month
-                    xml.day attributes.revrecstartdate.day
+                    xml.year parse_date(attributes.revrecstartdate).year
+                    xml.month parse_date(attributes.revrecstartdate).month
+                    xml.day parse_date(attributes.revrecstartdate).day
                   end
 
                 end
 
                 if attributes.revrecenddate.present?
                   xml.revrecenddate do
-                    xml.year attributes.revrecenddate.year
-                    xml.month attributes.revrecenddate.month
-                    xml.day attributes.revrecenddate.day
+                    xml.year parse_date(attributes.revrecenddate).year
+                    xml.month parse_date(attributes.revrecenddate).month
+                    xml.day parse_date(attributes.revrecenddate).day
                   end
 
                 end
@@ -338,18 +338,18 @@ module Intacct
       def update_xml(xml)
         if attributes.datecreated.present?
           xml.datecreated do
-            xml.year attributes.datecreated.year
-            xml.month attributes.datecreated.month
-            xml.day attributes.datecreated.day
+            xml.year parse_date(attributes.datecreated).year
+            xml.month parse_date(attributes.datecreated).month
+            xml.day parse_date(attributes.datecreated).day
           end
 
         end
 
         if attributes.dateposted.present?
           xml.dateposted do
-            xml.year attributes.dateposted.year
-            xml.month attributes.dateposted.month
-            xml.day attributes.dateposted.day
+            xml.year parse_date(attributes.dateposted).year
+            xml.month parse_date(attributes.dateposted).month
+            xml.day parse_date(attributes.dateposted).day
           end
 
         end
@@ -358,18 +358,18 @@ module Intacct
         xml.termname attributes.termname if attributes.termname.present?
         if attributes.datedue.present?
           xml.datedue do
-            xml.year attributes.datedue.year
-            xml.month attributes.datedue.month
-            xml.day attributes.datedue.day
+            xml.year parse_date(attributes.datedue).year
+            xml.month parse_date(attributes.datedue).month
+            xml.day parse_date(attributes.datedue).day
           end
 
         end
 
         if attributes.origdocdate.present?
           xml.origdocdate do
-            xml.year attributes.origdocdate.year
-            xml.month attributes.origdocdate.month
-            xml.day attributes.origdocdate.day
+            xml.year parse_date(attributes.origdocdate).year
+            xml.month parse_date(attributes.origdocdate).month
+            xml.day parse_date(attributes.origdocdate).day
           end
 
         end
@@ -384,9 +384,9 @@ module Intacct
         xml.currency attributes.currency
         if attributes.exchratedate.present?
           xml.exchratedate do
-            xml.year attributes.exchratedate.year
-            xml.month attributes.exchratedate.month
-            xml.day attributes.exchratedate.day
+            xml.year parse_date(attributes.exchratedate).year
+            xml.month parse_date(attributes.exchratedate).month
+            xml.day parse_date(attributes.exchratedate).day
           end
 
         end

@@ -55,8 +55,8 @@ module Intacct
         xml.TASKNAME attributes.taskname
         xml.PROJECTID attributes.projectid
         xml.TASKID attributes.taskid if attributes.taskid.present?
-        xml.PBEGINDATE attributes.pbegindate.strftime("%m/%d/%Y") if attributes.pbegindate.present?
-        xml.PENDDATE attributes.penddate.strftime("%m/%d/%Y") if attributes.penddate.present?
+        xml.PBEGINDATE format_date(attributes.pbegindate) if attributes.pbegindate.present?
+        xml.PENDDATE format_date(attributes.penddate) if attributes.penddate.present?
         xml.ITEMID attributes.itemid if attributes.itemid.present?
         xml.BILLABLE attributes.billable if attributes.billable.present?
         xml.TASKDESCRIPTION attributes.taskdescription if attributes.taskdescription.present?
@@ -111,8 +111,8 @@ module Intacct
       def update_xml(xml)
         xml.TASKNAME attributes.taskname if attributes.taskname.present?
         xml.PROJECTID attributes.projectid if attributes.projectid.present?
-        xml.PBEGINDATE attributes.pbegindate.strftime("%m/%d/%Y") if attributes.pbegindate.present?
-        xml.PENDDATE attributes.penddate.strftime("%m/%d/%Y") if attributes.penddate.present?
+        xml.PBEGINDATE format_date(attributes.pbegindate) if attributes.pbegindate.present?
+        xml.PENDDATE format_date(attributes.penddate) if attributes.penddate.present?
         xml.ITEMID attributes.itemid if attributes.itemid.present?
         xml.BILLABLE attributes.billable if attributes.billable.present?
         xml.TASKDESCRIPTION attributes.taskdescription if attributes.taskdescription.present?
