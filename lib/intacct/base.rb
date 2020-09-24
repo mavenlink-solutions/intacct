@@ -76,7 +76,7 @@ module Intacct
 
     def parse_date(date_object)
       if date_object.is_a?(String)
-        Date.strptime(date_object, DATE_FORMAT).strftime(DATE_FORMAT)
+        Date.strptime(date_object, DATE_FORMAT)
       else
         date_object
       end
