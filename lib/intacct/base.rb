@@ -18,6 +18,10 @@ module Intacct
       super(client, *args)
     end
 
+    def create_name
+      "create_#{self.class.name.demodulize.underscore}"
+    end
+
     def create_xml(_xml)
       raise NotImplementedError, "This model does not support create."
     end
@@ -61,10 +65,18 @@ module Intacct
     def format_date(date_object)
       return if date_object.blank?
 
+      date_object = parse_date(date_object)
+
       if date_object.is_a?(Date) || date_object.is_a?(Time)
         date_object.strftime(DATE_FORMAT)
-      elsif date_object.is_a?(String)
-        Date.strptime(date_object, DATE_FORMAT).strftime(DATE_FORMAT)
+      else
+        date_object
+      end
+    end
+
+    def parse_date(date_object)
+      if date_object.is_a?(String)
+        Date.strptime(date_object, DATE_FORMAT)
       else
         date_object
       end

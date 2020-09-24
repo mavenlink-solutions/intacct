@@ -1,12 +1,25 @@
 module Intacct
   module Actions
     class Inspect < Base
-      def request(options)
-        detail = options[:detail] ? "1" : "0"
+      LOOKUP_OBJECT = %w[Intacct::Models::SalesDocument].freeze
 
+      def request(options)
         Intacct::XmlRequest.build_xml(client, action) do |xml|
           xml.function(controlid: "1") do
-            xml << "<inspect detail=#{detail}><object>#{klass.api_name.upcase}</object></inspect>"
+            if klass.to_s.in?(LOOKUP_OBJECT)
+              docparid = options.try(:[], :docparid).presence
+              docparid = "<docparid>#{docparid}</docparid>" if docparid.present?
+
+              xml << <<-XML
+                <lookup>
+                  <object>#{klass.api_name.upcase}</object>
+                  #{docparid}
+                </lookup>
+              XML
+            else
+              detail = options[:detail] ? "1" : "0"
+              xml << "<inspect detail=#{detail}><object>#{klass.api_name.upcase}</object></inspect>"
+            end
           end
         end
       end

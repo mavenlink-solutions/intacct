@@ -1,7 +1,7 @@
 module Intacct
   module Actions
     class Create < Base
-      NEW_API_CLASSES = ["Intacct::Models::Expense", "Intacct::Models::SalesDocument"].freeze
+      NEW_API_CLASSES = ["Intacct::Models::Expense", "Intacct::Models::SalesDocument", "Intacct::Models::Sotransaction"].freeze
 
       def request(_options)
         if NEW_API_CLASSES.include?(klass.class.to_s)

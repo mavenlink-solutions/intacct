@@ -1,54 +1,55 @@
 module Intacct
   module Models
     class Task < Intacct::Base
-      CREATE_KEYS = %i[taskname
-                       projectid
-                       taskid
-                       pbegindate
-                       penddate
-                       itemid
-                       billable
-                       taskdescription
-                       ismilestone
-                       utilized
-                       priority
-                       taskno
-                       taskstatus
-                       parentkey
-                       parenttaskname
-                       budgetqty
-                       estqty
-                       timetype
-                       obspercentcomplete
-                       taskresources
-                       customfields
-                       classid
-                       supdocid
-                       dependentonkey
-                       dependentonname].freeze
-      UPDATE_KEYS = %i[taskname
-                       projectid
-                       pbegindate
-                       penddate
-                       itemid
-                       billable
-                       taskdescription
-                       ismilestone
-                       utilized
-                       priority
-                       taskno
-                       taskstatus
-                       parentkey
-                       parenttaskname
-                       budgetqty
-                       estqty
-                       timetype
-                       obspercentcomplete
-                       taskresources
-                       customfields
-                       classid
-                       dependentonkey
-                       dependentonname].freeze
+      CREATE_TASK_KEYS = %i[taskname
+                            projectid
+                            taskid
+                            pbegindate
+                            penddate
+                            itemid
+                            billable
+                            taskdescription
+                            ismilestone
+                            utilized
+                            priority
+                            taskno
+                            taskstatus
+                            parentkey
+                            parenttaskname
+                            budgetqty
+                            estqty
+                            timetype
+                            obspercentcomplete
+                            taskresources
+                            customfields
+                            classid
+                            supdocid
+                            dependentonkey
+                            dependentonname].freeze
+
+      UPDATE_TASK_KEYS = %i[taskname
+                            projectid
+                            pbegindate
+                            penddate
+                            itemid
+                            billable
+                            taskdescription
+                            ismilestone
+                            utilized
+                            priority
+                            taskno
+                            taskstatus
+                            parentkey
+                            parenttaskname
+                            budgetqty
+                            estqty
+                            timetype
+                            obspercentcomplete
+                            taskresources
+                            customfields
+                            classid
+                            dependentonkey
+                            dependentonname].freeze
 
       def create_xml(xml)
         xml.TASKNAME attributes.taskname
@@ -70,13 +71,16 @@ module Intacct
         xml.ESTQTY attributes.estqty if attributes.estqty.present?
         xml.TIMETYPE attributes.timetype if attributes.timetype.present?
         xml.OBSPERCENTCOMPLETE attributes.obspercentcomplete if attributes.obspercentcomplete.present?
-        xml.TASKRESOURCES do
-          Array.wrap(attributes.employeeid).each do |attributes|
-            xml.EMPLOYEEID attributes.employeeid
+        if attributes.taskresources.present?
+          xml.TASKRESOURCES do
+            Array.wrap(attributes.employeeids).each do |attributes|
+              xml.EMPLOYEEID attributes.employeeid
+            end
           end
+
         end
 
-        if attributes.customfields.present? || attributes.to_h.except(*CREATE_KEYS).present?
+        if attributes.customfields.present? || attributes.to_h.except(*CREATE_TASK_KEYS).present?
           xml.customfields do
             if attributes.customfields.present?
               attributes.customfields.presence&.each do |custom_field|
@@ -87,8 +91,8 @@ module Intacct
               end
             end
 
-            if attributes.to_h.except(*CREATE_KEYS).present?
-              attributes.to_h.except(*CREATE_KEYS).each do |name, value|
+            if attributes.to_h.except(*CREATE_TASK_KEYS).present?
+              attributes.to_h.except(*CREATE_TASK_KEYS).each do |name, value|
                 xml.customfield do
                   xml.customfieldname name
                   xml.customfieldvalue value
@@ -123,13 +127,16 @@ module Intacct
         xml.ESTQTY attributes.estqty if attributes.estqty.present?
         xml.TIMETYPE attributes.timetype if attributes.timetype.present?
         xml.OBSPERCENTCOMPLETE attributes.obspercentcomplete if attributes.obspercentcomplete.present?
-        xml.TASKRESOURCES do
-          Array.wrap(attributes.employeeid).each do |attributes|
-            xml.EMPLOYEEID attributes.employeeid
+        if attributes.taskresources.present?
+          xml.TASKRESOURCES do
+            Array.wrap(attributes.employeeids).each do |attributes|
+              xml.EMPLOYEEID attributes.employeeid
+            end
           end
+
         end
 
-        if attributes.customfields.present? || attributes.to_h.except(*UPDATE_KEYS).present?
+        if attributes.customfields.present? || attributes.to_h.except(*UPDATE_TASK_KEYS).present?
           xml.customfields do
             if attributes.customfields.present?
               attributes.customfields.presence&.each do |custom_field|
@@ -140,8 +147,8 @@ module Intacct
               end
             end
 
-            if attributes.to_h.except(*UPDATE_KEYS).present?
-              attributes.to_h.except(*UPDATE_KEYS).each do |name, value|
+            if attributes.to_h.except(*UPDATE_TASK_KEYS).present?
+              attributes.to_h.except(*UPDATE_TASK_KEYS).each do |name, value|
                 xml.customfield do
                   xml.customfieldname name
                   xml.customfieldvalue value

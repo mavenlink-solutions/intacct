@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
-MODELS_TO_GENERATE = %w[project task].freeze
+MODELS_TO_GENERATE = %w[project task sotransaction].freeze
+LEGACY_ENDPOINTS = %w[create_sotransaction update_sotransaction].freeze
 
 ENV["BUNDLER_VERSION"] ||= "1.17.3"
 ENV["BUNDLE_GEMFILE"] ||= File.expand_path("../Gemfile", __dir__)
@@ -39,6 +40,23 @@ end
 
 def element_name(element)
   element.attributes.values.detect { |attr| attr.name == "ref" || attr.name == "name" }&.value
+end
+
+def flatten_children(sequence, required: nil)
+  sequence.map do |element|
+    element.set_attribute("minOccurs", "0") if required.is_a?(FalseClass)
+    next element if element.name == "element"
+
+    filtered_children(element).map do |child|
+      if child.name == "element"
+        child.set_attribute("minOccurs", "0") if required.is_a?(FalseClass)
+        child
+      else
+        required = required.nil? ? element_required?(element) : required
+        flatten_children(child.children, required: required)
+      end
+    end
+  end.flatten
 end
 
 class RegisteredTypes
@@ -87,12 +105,26 @@ class XmlType
     (type_name || ref_name)
   end
 
-  def xml_name
+  def xml_name(legacy_endpoint)
+    return name if legacy_endpoint
+
     name.upcase
   end
 
   def ref
     RegisteredTypes.xml_types[ref_name]
+  end
+
+  def custom_fieldable?
+    return false if sequence.blank?
+
+    sequence.any? { |d| d.name == "customfields" }
+  end
+
+  def keys
+    return [] if sequence.blank?
+
+    sequence.map { |attr| attr.name.to_sym }
   end
 
   def array?
@@ -119,42 +151,60 @@ class XmlType
     end
   end
 
-  def to_ruby(action = "create", required: required?)
+  def to_ruby(required: required?, model: name, legacy_endpoint: false)
     case data_type
     when :custom_fields
-      custom_field_ruby(action)
+      custom_field_ruby(model)
     when :date
-      append_presence_check("xml.#{xml_name} format_date(attributes.#{name})", required)
+      format_date(legacy_endpoint, required)
     when :ref
-      ref.to_ruby(action, required: required)
+      ref.to_ruby(model: model, required: required, legacy_endpoint: legacy_endpoint)
     when :array
       wrap_presence_check(<<-RUBY, required)
-        Array.wrap(attributes.#{name}).each do |attributes|
-          #{ref.to_ruby(action)}
+        Array.wrap(attributes.#{name.pluralize}).each do |attributes|
+          #{ref.to_ruby(model: model, legacy_endpoint: legacy_endpoint)}
         end
       RUBY
     when :struct
-      wrap_presence_check(<<-RUBY)
-        xml.#{xml_name} do
-          #{format_sequence(action)}
+      wrap_presence_check(<<-RUBY, required)
+        xml.#{xml_name(legacy_endpoint)} do
+          #{format_sequence(legacy_endpoint)}
         end
       RUBY
     else
-      append_presence_check("xml.#{xml_name} attributes.#{name}", required)
+      append_presence_check("xml.#{xml_name(legacy_endpoint)} attributes.#{name}", required)
     end
+  end
+
+  def legacy_endpoint?
+    @type_name.in?(LEGACY_ENDPOINTS)
   end
 
   private
 
-  def format_sequence(action)
-    sequence.map { |s| s.to_ruby(action) }.join("\n")
+  def format_date(legacy_endpoint, required)
+    if legacy_endpoint
+      wrap_presence_check(<<-RUBY, required)
+        xml.#{xml_name(legacy_endpoint)} do
+          xml.year parse_date(attributes.#{name}).year
+          xml.month parse_date(attributes.#{name}).month
+          xml.day parse_date(attributes.#{name}).day
+        end
+      RUBY
+    else
+      append_presence_check("xml.#{xml_name(legacy_endpoint)} format_date(attributes.#{name})", required)
+    end
+  end
+
+  def format_sequence(legacy_endpoint)
+    sequence.map { |s| s.to_ruby(model: name, legacy_endpoint: legacy_endpoint) }.join("\n")
   end
 
   attr_reader :ref_name, :required
 
-  def custom_field_ruby(action)
+  def custom_field_ruby(model)
     <<-RUBY
-      if attributes.customfields.present? || attributes.to_h.except(*#{action.upcase}_KEYS).present?
+      if attributes.customfields.present? || attributes.to_h.except(*#{model.upcase}_KEYS).present?
         xml.customfields do
           if attributes.customfields.present?
             attributes.customfields.presence&.each do |custom_field|
@@ -165,8 +215,8 @@ class XmlType
             end
           end
 
-          if attributes.to_h.except(*#{action.upcase}_KEYS).present?
-            attributes.to_h.except(*#{action.upcase}_KEYS).each do |name, value|
+          if attributes.to_h.except(*#{model.upcase}_KEYS).present?
+            attributes.to_h.except(*#{model.upcase}_KEYS).each do |name, value|
               xml.customfield do
                 xml.customfieldname name
                 xml.customfieldvalue value
@@ -219,7 +269,8 @@ class XmlType
     sequence = filtered_children(complex).detect { |child| child.name == "sequence" }
     return if sequence.blank?
 
-    @sequence = filtered_children(sequence).map { |child| XmlType.new(child) }
+    sequence = filtered_children(sequence)
+    @sequence = flatten_children(sequence).map { |child| XmlType.new(child) }
   end
 end
 
@@ -230,15 +281,43 @@ filtered_children(parsed.root).map do |child|
   end
 end.compact
 
+def build_attribute_keys(attr)
+  return {} if attr.ref.blank? || attr.ref.sequence.blank?
+
+  keys = {}
+  keys["#{attr.name.upcase}_KEYS"] = attr.ref.sequence.map { |sub_attr| sub_attr.name.to_sym } if attr.ref.custom_fieldable?
+
+  attr.ref.sequence.each do |sub_attr|
+    keys.merge!(build_attribute_keys(sub_attr))
+  end
+
+  keys
+end
+
 def process_template(object)
   @class_name = object.camelcase
-  @create_attributes = RegisteredTypes.xml_types["create_#{object}"].sequence
-  @update_attributes = RegisteredTypes.xml_types["update_#{object}"].sequence
 
-  @create_names = @create_attributes.map { |attr| attr.name.to_sym }
-  @update_names = @update_attributes.map { |attr| attr.name.to_sym }
+  @create_attributes = RegisteredTypes.xml_types["create_#{object}"]
+  @update_attributes = RegisteredTypes.xml_types["update_#{object}"]
+  create_keys = @create_attributes.keys
+  update_keys = @update_attributes.keys
+  update_keys = "#{@create_attributes.name.upcase}_KEYS" if update_keys == create_keys
 
-  @update_names = "CREATE_KEYS" if (@identical = (@create_names == @update_names))
+  @attribute_keys = {
+    "#{@create_attributes.name.upcase}_KEYS" => create_keys,
+    "#{@update_attributes.name.upcase}_KEYS" => update_keys
+  }
+
+  @create_attributes.sequence.each do |attr|
+    @attribute_keys.merge!(build_attribute_keys(attr))
+  end
+
+  @update_attributes.sequence.each do |attr|
+    @attribute_keys.merge!(build_attribute_keys(attr))
+  end
+
+  @create_legacy_endpoint = RegisteredTypes.xml_types["create_#{object}"].legacy_endpoint?
+  @update_legacy_endpoint = RegisteredTypes.xml_types["update_#{object}"].legacy_endpoint?
 
   File.write(File.join(MODEL_DIR, "#{object}.rb"),
              ERB.new(@template, trim_mode: "-").result)
