@@ -55,6 +55,7 @@ module Intacct
          sotransactions
          gl_details
          ap_bill_items
+         accounts
          observed_percent_completeds]
     end
   end
