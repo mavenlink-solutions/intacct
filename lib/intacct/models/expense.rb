@@ -41,6 +41,7 @@ module Intacct
               xml.locationid   expense[:locationid]
               xml.departmentid expense[:departmentid]
               xml.projectid    expense[:projectid]
+              xml.taskid       expense[:taskid]
               xml.itemid       expense[:itemid]
               xml.billable     expense[:billable]
             end
@@ -107,6 +108,7 @@ module Intacct
                   end
                 end
                 xml.projectid   updateexpense[:projectid]
+                xml.taskid      updateexpense[:taskid]
                 xml.customerid  updateexpense[:customerid]
                 xml.vendorid    updateexpense[:vendorid]
                 xml.employeeid  updateexpense[:employeeid]
