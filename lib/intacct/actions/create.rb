@@ -26,10 +26,10 @@ module Intacct
       end
 
       def response_body
-        raw = @response.at("//result/data/#{klass.api_name}")
+        raw = @response.at("//result/data/#{klass.api_name.downcase}")
         return unless raw
 
-        Utils.instance.downcase_keys(Hash.from_xml(raw.to_xml)[klass.api_name])
+        Utils.instance.downcase_keys(Hash.from_xml(raw.to_xml)[klass.api_name.downcase])
       end
 
       def list_type
