@@ -111,8 +111,8 @@ module Intacct
       def update_xml(xml)
         xml.TASKNAME attributes.taskname if attributes.taskname.present?
         xml.PROJECTID attributes.projectid if attributes.projectid.present?
-        xml.PBEGINDATE format_date(attributes.pbegindate) if attributes.pbegindate.present?
-        xml.PENDDATE format_date(attributes.penddate) if attributes.penddate.present?
+        xml.PBEGINDATE format_date(attributes.pbegindate)
+        xml.PENDDATE format_date(attributes.penddate)
         xml.ITEMID attributes.itemid if attributes.itemid.present?
         xml.BILLABLE attributes.billable if attributes.billable.present?
         xml.TASKDESCRIPTION attributes.taskdescription if attributes.taskdescription.present?
