@@ -56,7 +56,8 @@ module Intacct
          gl_details
          ap_bill_items
          accounts
-         observed_percent_completeds]
+         observed_percent_completeds
+         contract_revenue_templates]
     end
   end
 end
