@@ -102,18 +102,6 @@ module Intacct
           end
         end
       end
-
-      def delete
-        return false unless attributes.payment.intacct_system_id.present?
-
-        send_xml("delete") do |xml|
-          xml.function(controlid: "1") do
-            xml.delete_bill(externalkey: "false", key: attributes.payment.intacct_key)
-          end
-        end
-
-        successful?
-      end
     end
   end
 end
