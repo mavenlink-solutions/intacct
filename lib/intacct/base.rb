@@ -4,7 +4,7 @@ module Intacct
 
     DATE_FORMAT = "%m/%d/%Y".freeze
 
-    attr_accessor :client, :sent_xml, :intacct_action, :api_name, :errors
+    attr_accessor :client, :sent_xml, :intacct_action, :api_name, :errors, :raw_response
 
     delegate :formatted_error_message, to: :class
 
