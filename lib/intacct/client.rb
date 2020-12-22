@@ -59,6 +59,7 @@ module Intacct
          observed_percent_completeds
          contract_revenue_templates
          order_entry_transaction_lines
+         location_entities
         ]
     end
   end
