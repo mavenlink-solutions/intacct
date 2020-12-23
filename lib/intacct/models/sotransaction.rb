@@ -103,6 +103,8 @@ module Intacct
                                contractid
                                customfields].freeze
 
+      api_name "SODOCUMENT"
+
       def create_xml(xml)
         xml.transactiontype attributes.transactiontype
         xml.datecreated do
