@@ -61,11 +61,8 @@ end
 module Intacct
   extend self
 
-  attr_accessor :xml_sender_id, :xml_password,
-                :user_id, :company_id, :password,
-                :invoice_prefix, :bill_prefix,
-                :vendor_prefix, :customer_prefix,
-                :project_prefix, :task_prefix
+  attr_accessor :xml_sender_id, :xml_password, :user_id, :company_id, :location_id, :password, :invoice_prefix,
+  attr_accessor :bill_prefix, :vendor_prefix, :customer_prefix, :project_prefix, :task_prefix
 
   def configure
     yield self

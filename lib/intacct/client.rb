@@ -8,7 +8,8 @@ module Intacct
         xml_password: options.fetch(:xml_password, Intacct.xml_password),
         user_id: options.fetch(:user_id, Intacct.user_id),
         password: options.fetch(:password, Intacct.password),
-        company_id: options.fetch(:company_id, Intacct.company_id)
+        company_id: options.fetch(:company_id, Intacct.company_id),
+        location_id: options.fetch(:location_id, Intacct.location_id)
       }
 
       raise ArgumentError, "Missing credential value." if credentials.values.any?(&:nil?)
