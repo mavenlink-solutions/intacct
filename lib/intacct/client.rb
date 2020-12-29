@@ -1,5 +1,13 @@
 module Intacct
   class Client
+    REQUIRED_CREDENTIALS = %i(
+      xml_sender_id
+      xml_password
+      user_id
+      password
+      company_id
+    ).freeze
+
     attr_accessor :credentials
 
     def initialize(options = {})
@@ -12,7 +20,7 @@ module Intacct
         location_id: options.fetch(:location_id, Intacct.location_id)
       }
 
-      raise ArgumentError, "Missing credential value." if credentials.values.any?(&:nil?)
+      raise ArgumentError, "Missing credential value." if credentials.slice(*REQUIRED_CREDENTIALS).values.any?(&:nil?)
     end
 
     def method_missing(method_name, *_args)
