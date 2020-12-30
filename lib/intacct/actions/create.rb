@@ -1,13 +1,11 @@
 module Intacct
   module Actions
     class Create < Base
-      NEW_API_CLASSES = ["Intacct::Models::Expense", "Intacct::Models::SalesDocument", "Intacct::Models::Sotransaction"].freeze
-
       def request(_options)
-        if NEW_API_CLASSES.include?(klass.class.to_s)
+        if legacy?
           Intacct::XmlRequest.build_xml(client, action) do |xml|
             xml.function(controlid: "1") do
-              xml.send(klass.create_name) do
+              xml.send(klass.legacy_create_name) do
                 klass.create_xml(xml)
               end
             end
