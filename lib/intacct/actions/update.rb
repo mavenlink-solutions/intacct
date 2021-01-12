@@ -23,10 +23,6 @@ module Intacct
         end
       end
 
-      def success?
-        super || (status = @response.at("//response//status")) && status.content == "success"
-      end
-
       def response_body
         nil
       end
