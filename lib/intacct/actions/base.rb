@@ -16,8 +16,7 @@ module Intacct
       end
 
       def build_response
-        Intacct::Response.new(client, success: success?, body: response_body,
-                                      errors: response_errors)
+        Intacct::Response.new(client, success: success?, body: response_body, errors: response_errors, raw_response: @response)
       end
 
       def request(_options)
