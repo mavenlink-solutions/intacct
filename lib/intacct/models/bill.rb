@@ -6,14 +6,14 @@ module Intacct
       api_name "APBILL"
 
       def create_xml(xml)
-        xml.WHENCREATED     attributes.whencreated
-        xml.VENDORID        attributes.vendorid
-        xml.RECORDID        attributes.recordid
-        xml.DESCRIPTION     attributes.description
-        xml.WHENDUE         attributes.whendue
-        xml.CURRENCY        attributes.currency
-        xml.BASECURR        attributes.basecurr
-        xml.ACTION          attributes.action
+        xml.WHENCREATED attributes.whencreated
+        xml.VENDORID attributes.vendorid
+        xml.RECORDID attributes.recordid
+        xml.DESCRIPTION attributes.description
+        xml.WHENDUE attributes.whendue
+        xml.CURRENCY attributes.currency
+        xml.BASECURR attributes.basecurr
+        xml.ACTION attributes.action
         xml.APBILLITEMS do
           attributes.apbillitems&.each do |bill_item|
             xml.APBILLITEM do
@@ -26,6 +26,8 @@ module Intacct
               xml.TASKID bill_item[:taskid]
               xml.CUSTOMERID bill_item[:customerid]
               xml.EMPLOYEEID bill_item[:employeeid]
+              xml.VENDORID bill_item[:vendorid]
+              xml.ENTRYDESCRIPTION bill_item[:entrydescription]
               if bill_item[:customfields]
                 xml.CUSTOMFIELDS do
                   bill_item[:customfields].each do |customfield|
@@ -52,15 +54,15 @@ module Intacct
       end
 
       def update_xml(xml)
-        xml.RECORDNO        attributes.recordno
-        xml.WHENCREATED     attributes.whencreated
-        xml.VENDORID        attributes.vendorid
-        xml.RECORDID        attributes.recordid
-        xml.DESCRIPTION     attributes.description
-        xml.WHENDUE         attributes.whendue
-        xml.CURRENCY        attributes.currency
-        xml.BASECURR        attributes.basecurr
-        xml.ACTION          attributes.action
+        xml.RECORDNO attributes.recordno
+        xml.WHENCREATED attributes.whencreated
+        xml.VENDORID attributes.vendorid
+        xml.RECORDID attributes.recordid
+        xml.DESCRIPTION attributes.description
+        xml.WHENDUE attributes.whendue
+        xml.CURRENCY attributes.currency
+        xml.BASECURR attributes.basecurr
+        xml.ACTION attributes.action
         xml.APBILLITEMS do
           attributes.apbillitems&.each do |bill_item|
             xml.APBILLITEM do
@@ -74,6 +76,8 @@ module Intacct
               xml.TASKID bill_item[:taskid]
               xml.CUSTOMERID bill_item[:customerid]
               xml.EMPLOYEEID bill_item[:employeeid]
+              xml.VENDORID bill_item[:vendorid]
+              xml.ENTRYDESCRIPTION bill_item[:entrydescription]
               if bill_item[:customfields]
                 xml.CUSTOMFIELDS do
                   bill_item[:customfields].each do |customfield|
@@ -97,18 +101,6 @@ module Intacct
             end
           end
         end
-      end
-
-      def delete
-        return false unless attributes.payment.intacct_system_id.present?
-
-        send_xml("delete") do |xml|
-          xml.function(controlid: "1") do
-            xml.delete_bill(externalkey: "false", key: attributes.payment.intacct_key)
-          end
-        end
-
-        successful?
       end
     end
   end
