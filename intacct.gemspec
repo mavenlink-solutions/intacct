@@ -15,7 +15,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "hooks"
-  spec.add_dependency "nokogiri"
+  spec.add_dependency "nokogiri", "~> 1.10.10"
 
   spec.add_runtime_dependency "activesupport"
 
