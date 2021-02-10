@@ -338,8 +338,8 @@ module Intacct
         end
       end
 
-      def update_xml(xml, options = {})
-        update_attributes = options.blank? ? attributes : OpenStruct.new(options)
+      def update_xml(xml, attributes_override = {})
+        update_attributes = attributes_override.present? ? OpenStruct.new(attributes_override) : attributes
 
         if update_attributes.datecreated.present?
           xml.datecreated do

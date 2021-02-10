@@ -6,7 +6,7 @@ module Intacct
           Intacct::XmlRequest.build_xml(client, action) do |xml|
             xml.function(controlid: "1") do
               xml.send(klass.legacy_update_name, key: klass.public_send(klass.id_attribute)) do
-                update_with_options? ? klass.update_xml(xml, options) : klass.update_xml(xml)
+                update_supports_override? ? klass.update_xml(xml, options) : klass.update_xml(xml)
               end
             end
           end
@@ -15,7 +15,7 @@ module Intacct
             xml.function(controlid: "1") do
               xml.update do
                 xml.send(klass.api_name) do
-                  update_with_options? ? klass.update_xml(xml, options) : klass.update_xml(xml)
+                  update_supports_override? ? klass.update_xml(xml, options) : klass.update_xml(xml)
                 end
               end
             end
@@ -51,7 +51,7 @@ module Intacct
 
       private
 
-      def update_with_options?
+      def update_supports_override?
         klass.method(:update_xml).arity != 1
       end
     end
