@@ -2,25 +2,7 @@ module Intacct
   module Actions
     class Update < Base
       def request(options = {})
-        if legacy?
-          Intacct::XmlRequest.build_xml(client, action) do |xml|
-            xml.function(controlid: "1") do
-              xml.send(klass.legacy_update_name, key: klass.public_send(klass.id_attribute)) do
-                update_supports_override? ? klass.update_xml(xml, options) : klass.update_xml(xml)
-              end
-            end
-          end
-        else
-          Intacct::XmlRequest.build_xml(client, action) do |xml|
-            xml.function(controlid: "1") do
-              xml.update do
-                xml.send(klass.api_name) do
-                  update_supports_override? ? klass.update_xml(xml, options) : klass.update_xml(xml)
-                end
-              end
-            end
-          end
-        end
+        legacy? ? generate_legacy_request(options) : generate_request(options)
       end
 
       def response_body
@@ -50,6 +32,28 @@ module Intacct
       end
 
       private
+
+      def generate_legacy_request(options)
+        Intacct::XmlRequest.build_xml(client, action) do |xml|
+          xml.function(controlid: "1") do
+            xml.send(klass.legacy_update_name, key: klass.public_send(klass.id_attribute)) do
+              update_supports_override? ? klass.update_xml(xml, options) : klass.update_xml(xml)
+            end
+          end
+        end
+      end
+
+      def generate_request(options)
+        Intacct::XmlRequest.build_xml(client, action) do |xml|
+          xml.function(controlid: "1") do
+            xml.update do
+              xml.send(klass.api_name) do
+                update_supports_override? ? klass.update_xml(xml, options) : klass.update_xml(xml)
+              end
+            end
+          end
+        end
+      end
 
       def update_supports_override?
         klass.method(:update_xml).arity != 1
