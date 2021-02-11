@@ -43,6 +43,7 @@ module Intacct
                 xml.userid client.credentials[:user_id]
                 xml.companyid client.credentials[:company_id]
                 xml.password client.credentials[:password]
+                xml.locationid client.credentials[:location_id]
               end
             end
             xml.content do

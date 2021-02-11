@@ -32,7 +32,9 @@ require "intacct/models/gl_detail"
 require "intacct/models/invoice"
 require "intacct/models/item"
 require "intacct/models/location"
+require "intacct/models/location_entity"
 require "intacct/models/observed_percent_completed"
+require "intacct/models/order_entry_transaction_line"
 require "intacct/models/project"
 require "intacct/models/project_resource"
 require "intacct/models/project_status"
@@ -59,11 +61,8 @@ end
 module Intacct
   extend self
 
-  attr_accessor :xml_sender_id, :xml_password,
-                :user_id, :company_id, :password,
-                :invoice_prefix, :bill_prefix,
-                :vendor_prefix, :customer_prefix,
-                :project_prefix, :task_prefix
+  attr_accessor :xml_sender_id, :xml_password, :user_id, :company_id, :location_id, :password
+  attr_accessor :invoice_prefix, :bill_prefix, :vendor_prefix, :customer_prefix, :project_prefix, :task_prefix
 
   def configure
     yield self

@@ -3,7 +3,7 @@ module Intacct
     class SalesDocument < Base
       api_name "sodocument"
 
-      def create_name
+      def legacy_create_name
         "create_sotransaction"
       end
 

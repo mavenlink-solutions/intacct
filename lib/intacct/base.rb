@@ -18,12 +18,16 @@ module Intacct
       super(client, *args)
     end
 
-    def create_name
+    def legacy_create_name
       "create_#{self.class.name.demodulize.underscore}"
     end
 
     def create_xml(_xml)
       raise NotImplementedError, "This model does not support create."
+    end
+
+    def legacy_update_name
+      "update_#{self.class.name.demodulize.underscore}"
     end
 
     def update_xml(_xml)

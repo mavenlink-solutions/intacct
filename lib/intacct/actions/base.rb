@@ -1,6 +1,12 @@
 module Intacct
   module Actions
     class Base
+      LEGACY_API_CLASSES = %w(
+        Intacct::Models::Expense
+        Intacct::Models::SalesDocument
+        Intacct::Models::Sotransaction
+      ).freeze
+
       attr_accessor :client, :action, :klass
 
       def initialize(client, klass, action, options = {})
@@ -42,6 +48,12 @@ module Intacct
 
       def list_type
         raise NotImplementedError, "Implement this method in the subclass"
+      end
+
+      private
+
+      def legacy?
+        LEGACY_API_CLASSES.include?(klass.class.to_s)
       end
     end
   end

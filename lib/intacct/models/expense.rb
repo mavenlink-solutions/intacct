@@ -3,7 +3,7 @@ module Intacct
     class Expense < Intacct::Base
       api_name "EEXPENSES"
 
-      def create_name
+      def legacy_create_name
         "create_expensereport"
       end
 
