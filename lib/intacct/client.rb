@@ -69,6 +69,7 @@ module Intacct
          contract_revenue_templates
          order_entry_transaction_lines
          location_entities
+         expense_item
         ]
     end
   end

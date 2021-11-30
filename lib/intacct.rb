@@ -47,6 +47,7 @@ require "intacct/models/task_resource"
 require "intacct/models/timesheet"
 require "intacct/models/timesheet_entry"
 require "intacct/models/vendor"
+require "intacct/models/expense_item"
 
 class Object
   def blank?
