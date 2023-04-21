@@ -17,8 +17,19 @@ module Intacct
                 </lookup>
               XML
             else
-              detail = options[:detail] ? "1" : "0"
-              xml << "<inspect detail=#{detail}><object>#{klass.api_name.upcase}</object></inspect>"
+              if options[:detail]
+                xml << <<-XML
+                  <inspect detail="1">
+                    <object>#{klass.api_name.upcase}</object>
+                  </inspect>
+                XML
+              else
+                xml << <<-XML
+                  <inspect detail="0">
+                    <object>#{klass.api_name.upcase}</object>
+                  </inspect>
+                XML
+              end
             end
           end
         end
