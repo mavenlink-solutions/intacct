@@ -19,4 +19,34 @@ describe Intacct::Base do
     expect(example.client).to eq(client)
     expect(example.id).to eq "12345"
   end
+
+  context "when errors are present" do
+    let(:errors) { [{ "description" => "first desc", "description2" => "second desc" }] }
+
+    it "formats the error correctly" do
+      example = Intacct::Models::Example.formatted_error_message(errors)
+
+      expect(example).to eq("first desc: second desc")
+    end
+
+    context "when description or desciption2 is not present" do
+      let(:errors) { [{ "description2" => "second desc" }] }
+
+      it "formats the error correctly" do
+        example = Intacct::Models::Example.formatted_error_message(errors)
+
+        expect(example).to eq("second desc")
+      end
+    end
+
+    context "when description and desciption2 is not present" do
+      let(:errors) { [{}] }
+
+      it "formats the error correctly" do
+        example = Intacct::Models::Example.formatted_error_message(errors)
+
+        expect(example).to eq("Undefined error")
+      end
+    end
+  end
 end
