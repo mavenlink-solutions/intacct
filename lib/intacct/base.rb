@@ -173,7 +173,7 @@ module Intacct
         if error["description"].present? && error["description2"].present?
           "#{error["description"]}: #{error["description2"]}"
         else
-          error["description"].presence || error["description2"] || "Undefined error"
+          error["description"].presence || error["description2"].presence || "Undefined error"
         end
       end.join(" ")
     end
