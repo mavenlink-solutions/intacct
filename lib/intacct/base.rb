@@ -170,8 +170,12 @@ module Intacct
 
     def self.formatted_error_message(errors)
       [errors].flatten.map do |error|
-        error["description"].presence || error["description2"] || "Undefined error"
-      end .join(" ")
+        if error["description"].present? && error["description2"].present?
+          "#{error["description"]}: #{error["description2"]}"
+        else
+          error["description"].presence || error["description2"].presence || "Undefined error"
+        end
+      end.join(" ")
     end
   end
 end
