@@ -29,7 +29,7 @@ describe Intacct::Base do
       expect(example).to eq("first desc: second desc")
     end
 
-    context "when description or desciption2 is not present" do
+    context "when only description2 is present" do
       let(:errors) { [{ "description2" => "second desc" }] }
 
       it "formats the error correctly" do
