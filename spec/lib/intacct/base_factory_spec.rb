@@ -4,11 +4,6 @@ describe Intacct::BaseFactory do
   module Intacct
     module Models
       class Foo
-        def self.get(*args); end
-
-        def self.read_by_query(*args); end
-
-        def self.build(*args); end
       end
     end
   end
@@ -23,7 +18,9 @@ describe Intacct::BaseFactory do
   end
 
   it "proxies get to the target class" do
-    expect(Intacct::Models::Foo).to receive(:get).with(client, "1")
+    expect(Intacct::Models::Foo).to receive(:get) do |*args, **_kwargs|
+      expect(args).to eq [client, "1"]
+    end
     subject.get("1")
   end
 
