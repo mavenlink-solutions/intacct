@@ -13,8 +13,8 @@ module Intacct
 
     def self.delegate_to_target_class(*method_names)
       method_names.each do |method_name|
-        define_method method_name do |*args|
-          target_class.send(method_name, @client, *args)
+        define_method method_name do |*args, **kwargs|
+          target_class.send(method_name, @client, *args, **kwargs)
         end
       end
     end
