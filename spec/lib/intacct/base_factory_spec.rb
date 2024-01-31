@@ -20,7 +20,7 @@ describe Intacct::BaseFactory do
   it "proxies get to the target class" do
     allow(Intacct::Models::Foo).to receive(:get)
     subject.get("1")
-    expect(Intacct::Models::Foo).to have_received(:get) do |*args, **kwargs|
+    expect(Intacct::Models::Foo).to have_received(:get) do |*args, **_kwargs|
       expect(args).to eq([client, "1"])
     end
   end
@@ -40,7 +40,10 @@ describe Intacct::BaseFactory do
 
   it "proxies build to the target class" do
     attrs = double
-    expect(Intacct::Models::Foo).to receive(:build).with(client, attrs)
+    allow(Intacct::Models::Foo).to receive(:build)
     subject.build(attrs)
+    expect(Intacct::Models::Foo).to have_received(:build) do |*args, **_kwargs|
+      expect(args).to eq([client, attrs])
+    end
   end
 end
