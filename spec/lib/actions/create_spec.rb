@@ -1,6 +1,8 @@
 require "spec_helper"
 
 describe Intacct::Actions::Create do
+  include RSpec::Mocks::ExampleMethods
+
   class TestModel < Intacct::Base
     include Intacct::Actions::Create::Helper
   end
@@ -8,10 +10,10 @@ describe Intacct::Actions::Create do
   describe "create" do
     subject { TestModel.new(client_double, {}) }
     let(:options) { {} }
-    let(:create_double) { instance_double(described_class) }
-    let(:client_double) { instance_double(Intacct::Client) }
+    let(:create_double) { double(described_class) }
+    let(:client_double) { double(Intacct::Client) }
     let(:response_double) do
-      instance_double(
+      double(
         Intacct::Response,
         errors: ["error"],
         body: { "recordno" => "12345" },
@@ -20,8 +22,10 @@ describe Intacct::Actions::Create do
     end
 
     before do
-      allow(described_class).to receive(:new).with(client_double, subject, "create", options) { create_double }
-      allow(create_double).to receive(:perform) { response_double }
+      allow(described_class).to receive(:new) do |*args|
+        expect(args).to eq [client_double, subject, "create", options]
+      end.and_return(create_double)
+      allow(create_double).to receive(:perform).and_return(response_double)
     end
 
     context "when successful" do
