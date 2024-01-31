@@ -18,13 +18,20 @@ describe Intacct::BaseFactory do
   end
 
   it "proxies get to the target class" do
-    expect(Intacct::Models::Foo).to receive(:get).with(client, "1")
+    allow(Intacct::Models::Foo).to receive(:get)
     subject.get("1")
+    expect(Intacct::Models::Foo).to have_received(:get) do |*args, **kwargs|
+      expect(args).to eq([client, "1"])
+    end
   end
 
   it "proxies read_by_query to the target class" do
-    expect(Intacct::Models::Foo).to receive(:read_by_query).with(client, { query: "FOO" })
+    allow(Intacct::Models::Foo).to receive(:read_by_query)
     subject.read_by_query(query: "FOO")
+    expect(Intacct::Models::Foo).to have_received(:read_by_query) do |*args, **kwargs|
+      expect(args).to eq([client])
+      expect(kwargs).to eq({ query: "FOO" })
+    end
   end
 
   it "returns the target class" do
