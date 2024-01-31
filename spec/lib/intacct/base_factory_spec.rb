@@ -4,6 +4,11 @@ describe Intacct::BaseFactory do
   module Intacct
     module Models
       class Foo
+        def self.get(*args); end
+
+        def self.read_by_query(*args); end
+
+        def self.build(*args); end
       end
     end
   end
