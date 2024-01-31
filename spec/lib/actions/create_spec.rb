@@ -22,9 +22,8 @@ describe Intacct::Actions::Create do
     end
 
     before do
-      allow(described_class).to receive(:new) do |*args, **kwargs|
-        expect(args).to eq [client_double, subject, "create"]
-        expect(kwargs).to eq(options)
+      allow(described_class).to receive(:new) do |*args|
+        expect(args).to eq [client_double, subject, "create", options]
       end.and_return(create_double)
       allow(create_double).to receive(:perform).and_return(response_double)
     end

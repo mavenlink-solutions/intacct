@@ -36,7 +36,7 @@ module Intacct
 
       module Helper
         def create(options = {})
-          response = Intacct::Actions::Create.new(client, self, "create", **options).perform
+          response = Intacct::Actions::Create.new(client, self, "create", options).perform
 
           @errors = response.errors
           @raw_response = response.raw_response
